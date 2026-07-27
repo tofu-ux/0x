@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0x — Theme Builder</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+
+<!-- real 0x tokens + components, unmodified — this page only overrides
+     --shine / --shine-strong / --shine-bright / --font-display at runtime -->
+<link rel="stylesheet" href="./assets/tokens.css">
+<link rel="stylesheet" href="./assets/components.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Fredoka:wght@400;500;600;700&family=Grandstander:wght@400;700&family=Unbounded:wght@400;700;900&family=Archivo+Black&family=Bricolage+Grotesque:wght@400;700;900&family=Righteous&family=Baloo+2:wght@400;600;700;800&family=Lilita+One&family=Bungee&family=Monoton&family=Rubik+Mono+One&family=Fraunces:wght@400;600;700&family=Playfair+Display:wght@400;700;900&family=Pacifico&family=Space+Grotesk:wght@400;500;700&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--font-mono); font-size: var(--text-base);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+    padding-bottom: 120px;
+  }
+  :focus-visible { outline: 2px solid var(--shine); outline-offset: 2px; }
+  a { color: var(--shine); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    flex-wrap: wrap;
+    padding: var(--space-3) var(--pad);
+    background: var(--header-bg); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .bar .tag {
+    font-size: var(--text-sm); color: var(--text-faint);
+  }
+  .bar .tag b { color: var(--shine); }
+  .bar button {
+    min-height: 36px; padding: 0 var(--space-3);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: transparent; color: var(--text-muted); font: inherit; font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .bar button:hover { border-color: var(--shine); color: var(--shine); }
+
+  main { padding: var(--space-7) var(--pad); max-width: 1400px; margin-inline: auto; }
+  section { margin-bottom: var(--space-9); }
+  .sec-head { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
+  .sec-head .no { color: var(--shine); font-size: var(--text-sm); font-weight: 500; }
+  .sec-head h2 { font-family: var(--font-display); font-size: var(--text-xl); letter-spacing: 0.02em; }
+  .sec-head p { flex-basis: 100%; color: var(--text-faint); font-size: var(--text-sm); margin-top: var(--space-1); }
+
+  /* --- color swatches --- */
+  .swatch-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-3);
+  }
+  .swatch {
+    text-align: left; cursor: pointer;
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface); color: var(--text);
+    font: inherit; padding: 0; overflow: hidden;
+  }
+  .swatch:hover { border-color: var(--text-faint); }
+  .swatch[aria-pressed="true"] { border-color: var(--shine); box-shadow: 0 0 0 1px var(--shine); }
+  .swatch .chip { height: 64px; display: flex; gap: 1px; }
+  .swatch .chip .mini {
+    position: relative; flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px;
+  }
+  .swatch .chip .mini span.tag {
+    position: absolute; top: 4px; left: 5px;
+    font-family: var(--font-mono); font-size: 9px; font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55;
+  }
+  .swatch .meta { padding: var(--space-2) var(--space-3) var(--space-3); }
+  .swatch .name { font-size: var(--text-sm); font-weight: 600; }
+  .swatch .ratios { margin-top: 4px; font-size: 12px; color: var(--text-faint); line-height: 1.5; }
+  .swatch .ratios b { color: var(--text-muted); }
+  .swatch .ratios .fail { color: var(--danger); }
+  .swatch .ratios .pass { color: var(--success); }
+
+  .custom-row {
+    margin-top: var(--space-4);
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+    font-size: var(--text-sm); color: var(--text-muted);
+  }
+  .custom-row input[type="color"] {
+    width: 44px; height: 44px; padding: 2px;
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface-strong); cursor: pointer;
+  }
+
+  .duo-toggle {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-bottom: var(--space-4); font-size: var(--text-sm); color: var(--text-muted);
+    cursor: pointer;
+  }
+  .duo-toggle input { width: 18px; height: 18px; accent-color: var(--shine); }
+
+  .mini-swatch-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+  .mini-swatch {
+    width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent;
+    cursor: pointer; padding: 0; display: flex;
+  }
+  .mini-swatch i { flex: 1; }
+  .mini-swatch:first-child i { border-radius: 50% 0 0 50%; }
+  .mini-swatch:last-child i { border-radius: 0 50% 50% 0; }
+  .mini-swatch[aria-pressed="true"] { border-color: var(--text); }
+
+  /* duo stripe — two flat halves shown together, not a blended gradient */
+  .stripe { display: flex; height: 40px; border-radius: var(--radius); overflow: hidden; margin-bottom: var(--space-5); }
+  .stripe i { flex: 1; }
+
+  /* --- font options --- */
+  .font-live {
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface); padding: var(--space-6) var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+  .font-live-label { font-size: var(--text-sm); color: var(--text-faint); margin-bottom: var(--space-3); }
+  .font-live-label b { color: var(--shine); }
+  .font-live-sample {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.4; color: var(--text);
+    overflow-wrap: anywhere; padding-block: 0.15em;
+  }
+  .font-grid { display: grid; gap: var(--space-3); }
+  .font-opt {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+    width: 100%; text-align: left; cursor: pointer;
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface); color: var(--text);
+    font: inherit; padding: var(--space-4) var(--space-5);
+  }
+  .font-opt:hover { border-color: var(--text-faint); }
+  .font-opt[aria-pressed="true"] { border-color: var(--shine); box-shadow: 0 0 0 1px var(--shine); }
+  .font-opt .sample { font-size: 2rem; line-height: 1.4; overflow-wrap: anywhere; padding-block: 0.1em; }
+  .font-opt .label { flex: none; font-size: var(--text-sm); color: var(--text-faint); text-align: right; }
+  .font-opt .hint { font-size: 12px; color: var(--text-faint); opacity: 0.75; }
+
+  /* --- name options --- */
+  .name-row { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; }
+  .name-opt {
+    min-height: 44px; padding: 0 var(--space-4);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface); color: var(--text); font: inherit; font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .name-opt:hover { border-color: var(--text-faint); }
+  .name-opt[aria-pressed="true"] { border-color: var(--shine); color: var(--shine); }
+  .name-row input[type="text"] {
+    min-height: 44px; padding: 0 var(--space-3);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface-strong); color: var(--text); font: inherit; font-size: var(--text-sm);
+    width: 180px;
+  }
+
+  /* --- live preview --- */
+  .preview {
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface); padding: var(--space-7) var(--pad);
+  }
+  .pv-word {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: var(--text-xl);
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--text);
+    margin-bottom: var(--space-6);
+  }
+  .pv-word i { width: 10px; height: 10px; background: var(--shine); flex: none; }
+  #pv-word-dot-2 { background: var(--shine-2, var(--shine)); border-radius: 50%; }
+
+  body.duo .term-body .st,
+  body.duo .term-body .fn { color: var(--shine-2, var(--code-string)); }
+  .pv-h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4.25rem); line-height: 1.65;
+    color: var(--text); margin-bottom: var(--space-3);
+  }
+  .pv-h1 span { color: var(--shine); }
+  .pv-sub { max-width: 60ch; color: var(--text-muted); margin-bottom: var(--space-6); }
+  .pv-row { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-start; }
+  .pv-col { flex: 1 1 260px; }
+
+  .h-callout { margin-bottom: var(--space-4); }
+
+  .term { border: 1px solid var(--hairline); background: var(--bg); border-radius: var(--radius); margin-top: var(--space-4); }
+  .term-bar { padding: 8px 14px; border-bottom: 1px solid var(--hairline); font-size: var(--text-sm); color: var(--text-faint); }
+  .term-body { padding: var(--space-4) 14px; font-size: var(--text-sm); line-height: 1.8; color: var(--text-muted); white-space: pre; overflow-x: auto; }
+  .term-body .kw { color: var(--code-keyword); }
+  .term-body .st { color: var(--code-string); }
+  .term-body .nu { color: var(--code-number); }
+  .term-body .fn { color: var(--code-function); }
+  .term-body .cm { color: var(--code-comment); }
+
+  .pv-card {
+    padding: var(--space-5); border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--bg); margin-top: var(--space-4);
+  }
+  .pv-card h4::before { content: "▸ "; color: var(--shine); }
+  .pv-card h4 { font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.04em; margin-bottom: var(--space-2); }
+  .pv-card p { font-size: var(--text-sm); color: var(--text-muted); }
+
+  footer.note {
+    max-width: 1400px; margin: var(--space-8) auto 0; padding: 0 var(--pad);
+    font-size: var(--text-sm); color: var(--text-faint);
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="tag">Theme Builder &mdash; <b>design your own palette.</b> Pick a color, a font, a name, and read the live WCAG contrast numbers as you go.</div>
+  <button type="button" id="theme-btn">switch to light</button>
+</div>
+
+<main>
+
+  <section id="color">
+    <div class="sec-head">
+      <span class="no">01</span><h2>Accent color</h2>
+      <p>12 candidates &mdash; magenta and cyan get two shots each since you flagged those, plus purple and a handful of wildcards. Numbers are live WCAG contrast ratios against each swatch's own derived background.</p>
+    </div>
+    <label class="duo-toggle">
+      <input type="checkbox" id="duo-toggle">
+      Duo mode &mdash; run two accents together (e.g. magenta + cyan, Miami Vice&ndash;style)
+    </label>
+    <div class="swatch-grid" id="swatch-grid"></div>
+    <div class="custom-row">
+      <label for="custom-color">Or pick your own (primary):</label>
+      <input type="color" id="custom-color" value="#E0559A">
+      <span id="custom-ratios"></span>
+    </div>
+
+    <div id="secondary-block" hidden>
+      <div class="sec-head" style="margin-top: var(--space-6)">
+        <span class="no">01b</span><h2>Secondary accent</h2>
+        <p>Paired with the primary above &mdash; used for secondary links, code strings, and the duo stripe in the preview. The default 0x theme sticks to one accent; this explores a second on purpose.</p>
+      </div>
+      <div class="mini-swatch-row" id="secondary-row"></div>
+      <div class="custom-row">
+        <label for="custom-color-2">Or pick your own (secondary):</label>
+        <input type="color" id="custom-color-2" value="#3FD3E0">
+        <span id="custom-ratios-2"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="font">
+    <div class="sec-head">
+      <span class="no">02</span><h2>Headline font</h2>
+      <p>Replaces VT323 (the pixel/terminal face). Body and code stay in IBM Plex Mono either way &mdash; this only changes display headlines, the wordmark, and section titles.</p>
+    </div>
+    <div class="font-live" id="font-live">
+      <div class="font-live-label">Currently previewing: <b id="font-live-name">Fredoka</b></div>
+      <div class="font-live-sample" id="font-live-sample">Shiny things, kept in public.</div>
+    </div>
+    <div class="font-grid" id="font-grid"></div>
+  </section>
+
+  <section id="name">
+    <div class="sec-head">
+      <span class="no">03</span><h2>Name</h2>
+      <p>Your "ox" / "0x" direction, a few treatments &mdash; or type your own.</p>
+    </div>
+    <div class="name-row" id="name-row"></div>
+  </section>
+
+  <section id="preview">
+    <div class="sec-head">
+      <span class="no">04</span><h2>Live preview</h2>
+      <p>Real 0x components (assets/components.css, unmodified) reacting to whatever you've picked above.</p>
+    </div>
+    <div class="preview">
+      <div class="stripe" id="pv-stripe" hidden><i class="half-1"></i><i class="half-2"></i></div>
+      <div class="pv-word" id="pv-word"><i aria-hidden="true"></i><i id="pv-word-dot-2" aria-hidden="true" hidden></i><span id="pv-word-text">OX</span></div>
+      <h1 class="pv-h1" id="pv-h1">Shiny things,<br><span>kept in public.</span></h1>
+      <p class="pv-sub">This sentence is body copy in IBM Plex Mono, unaffected by the display font swap &mdash; only headlines change.</p>
+
+      <div class="pv-row">
+        <div class="pv-col">
+          <div class="h-cluster">
+            <button class="h-btn h-btn-primary" type="button">commit</button>
+            <button class="h-btn" type="button">stash</button>
+            <button class="h-btn h-btn-quiet" type="button">cancel</button>
+          </div>
+          <div class="h-callout" style="margin-top: var(--space-4)">
+            <span class="h-callout-mark" aria-hidden="true">i</span>
+            <div><strong>Build ready.</strong> This callout's left border and mark use the accent.</div>
+          </div>
+          <div class="h-progress" role="progressbar" aria-label="demo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72" style="margin-top: var(--space-4)">
+            <div class="h-progress-meta"><span>uploading</span><span>72%</span></div>
+            <div class="h-progress-track"><span class="h-progress-value" style="width: 72%"></span></div>
+          </div>
+        </div>
+        <div class="pv-col">
+          <div class="term">
+            <div class="term-bar">sh &mdash; code-syntax tokens follow the accent too</div>
+            <div class="term-body"><span class="cm">// keywords and prompts use --shine</span>
+<span class="kw">public extension</span> <span class="fn">Color</span> {
+    <span class="kw">static let</span> accent = <span class="fn">Color</span>(<span class="st">"shine"</span>, <span class="nu">1.0</span>)
+}</div>
+          </div>
+          <div class="pv-card">
+            <h4>swift-retry</h4>
+            <p>Card titles use the accent-colored marker. <a href="#" onclick="return false">This link</a> uses it too.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="note">
+  This page doesn't write anywhere &mdash; it's for finding a combination you like. To ship it for real,
+  edit <code>tokens/tokens.json</code> with your picks and run <code>bun run tools/build.ts</code>.
+  See <a href="./themes.html">the Theme Gallery</a> for 10 ready-made palettes, or <a href="./index.html">the main spec</a>.
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.documentElement;
+
+  // ---------- contrast math ----------
+  function hexToRgb(hex) {
+    const m = hex.replace("#", "").match(/.{2}/g);
+    return m.map((h) => parseInt(h, 16));
+  }
+  function hexToRgbStr(hex) { return hexToRgb(hex).join(", "); }
+  function relLuminance([r, g, b]) {
+    const chan = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    const [rl, gl, bl] = [r, g, b].map(chan);
+    return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+  }
+  function contrast(hexA, hexB) {
+    const lA = relLuminance(hexToRgb(hexA));
+    const lB = relLuminance(hexToRgb(hexB));
+    const [hi, lo] = lA > lB ? [lA, lB] : [lB, lA];
+    return (hi + 0.05) / (lo + 0.05);
+  }
+
+  // ---------- hsl helpers, for deriving -strong / -bright ----------
+  function hexToHsl(hex) {
+    let [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        default: h = (r - g) / d + 4;
+      }
+      h /= 6;
+    }
+    return [h * 360, s * 100, l * 100];
+  }
+  function hslToHex(h, s, l) {
+    h /= 360; s /= 100; l /= 100;
+    let r, g, b;
+    if (s === 0) { r = g = b = l; }
+    else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1; if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1 / 3);
+    }
+    const toHex = (c) => Math.round(c * 255).toString(16).padStart(2, "0");
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+  function darken(hex, amt) { const [h, s, l] = hexToHsl(hex); return hslToHex(h, s, Math.max(0, l - amt)); }
+  function lighten(hex, amt) { const [h, s, l] = hexToHsl(hex); return hslToHex(h, s, Math.min(100, l + amt)); }
+
+  // A whole background/surface/text set, tinted from the accent's own hue —
+  // this is what makes each swatch a full theme, not just a button color.
+  function deriveTheme(baseHex, mode) {
+    const [h] = hexToHsl(baseHex);
+    if (mode === "dark") {
+      return {
+        bg: hslToHex(h, 22, 7),
+        surface: hslToHex(h, 20, 10),
+        surfaceStrong: hslToHex(h, 18, 15),
+        text: hslToHex(h, 12, 93),
+        textMuted: hslToHex(h, 10, 75),
+        textFaint: hslToHex(h, 8, 60),
+      };
+    }
+    return {
+      bg: hslToHex(h, 32, 96),
+      surface: hslToHex(h, 20, 99),
+      surfaceStrong: hslToHex(h, 24, 91),
+      text: hslToHex(h, 22, 12),
+      textMuted: hslToHex(h, 16, 27),
+      textFaint: hslToHex(h, 14, 40),
+    };
+  }
+
+  // ---------- palette candidates ----------
+  const PALETTES = [
+    { id: "magenta", name: "Magenta", dark: "#E0559A", light: "#A31E5C" },
+    { id: "fuchsia", name: "Fuchsia", dark: "#E85CC7", light: "#96218A" },
+    { id: "cyan", name: "Cyan", dark: "#3FD3E0", light: "#0A7480" },
+    { id: "turquoise", name: "Turquoise", dark: "#2FD9A8", light: "#0B7A5C" },
+    { id: "violet", name: "Violet", dark: "#B07AF0", light: "#6C2FB0" },
+    { id: "indigo", name: "Indigo", dark: "#8C7CF0", light: "#4B34B8" },
+    { id: "coral", name: "Coral", dark: "#FF7B6B", light: "#C23A26" },
+    { id: "amber", name: "Amber", dark: "#F0B93D", light: "#8A5F00" },
+    { id: "lime", name: "Lime", dark: "#B8E04E", light: "#5C7A00" },
+    { id: "azure", name: "Azure", dark: "#4FA3F0", light: "#1959A8" },
+    { id: "sunset", name: "Sunset", dark: "#FF8C4B", light: "#B0480A" },
+    { id: "rose", name: "Rose", dark: "#F0637A", light: "#A81E3A" },
+  ];
+
+  const FONTS = [
+    { id: "fredoka", name: "Fredoka", stack: `"Fredoka", "IBM Plex Mono", monospace`, weight: 600, hint: "rounded, friendly" },
+    { id: "grandstander", name: "Grandstander", stack: `"Grandstander", "IBM Plex Mono", monospace`, weight: 700, hint: "bouncy, casual" },
+    { id: "unbounded", name: "Unbounded", stack: `"Unbounded", "IBM Plex Mono", monospace`, weight: 700, hint: "bold, geometric" },
+    { id: "archivo", name: "Archivo Black", stack: `"Archivo Black", "IBM Plex Mono", monospace`, weight: 400, hint: "confident, blocky" },
+    { id: "bricolage", name: "Bricolage Grotesque", stack: `"Bricolage Grotesque", "IBM Plex Mono", monospace`, weight: 800, hint: "trendy, quirky" },
+    { id: "righteous", name: "Righteous", stack: `"Righteous", "IBM Plex Mono", monospace`, weight: 400, hint: "retro-poppy" },
+    { id: "baloo2", name: "Baloo 2", stack: `"Baloo 2", "IBM Plex Mono", monospace`, weight: 700, hint: "chunky, warm" },
+    { id: "lilita", name: "Lilita One", stack: `"Lilita One", "IBM Plex Mono", monospace`, weight: 400, hint: "bubbly, cartoon" },
+    { id: "bungee", name: "Bungee", stack: `"Bungee", "IBM Plex Mono", monospace`, weight: 400, hint: "graffiti, urban" },
+    { id: "monoton", name: "Monoton", stack: `"Monoton", "IBM Plex Mono", monospace`, weight: 400, hint: "neon sign — Miami Vice territory" },
+    { id: "rubikmono", name: "Rubik Mono One", stack: `"Rubik Mono One", "IBM Plex Mono", monospace`, weight: 400, hint: "techie, mono-display" },
+    { id: "fraunces", name: "Fraunces", stack: `"Fraunces", "IBM Plex Mono", monospace`, weight: 600, hint: "elegant serif, cozy" },
+    { id: "playfair", name: "Playfair Display", stack: `"Playfair Display", "IBM Plex Mono", monospace`, weight: 700, hint: "classic, elegant" },
+    { id: "pacifico", name: "Pacifico", stack: `"Pacifico", "IBM Plex Mono", monospace`, weight: 400, hint: "handwritten script" },
+    { id: "spacegrotesk", name: "Space Grotesk", stack: `"Space Grotesk", "IBM Plex Mono", monospace`, weight: 500, hint: "clean, modern" },
+    { id: "comfortaa", name: "Comfortaa", stack: `"Comfortaa", "IBM Plex Mono", monospace`, weight: 700, hint: "soft, rounded modern" },
+  ];
+
+  const NAMES = ["Ox", "0x", "Oxide", "OXDS"];
+
+  let state = {
+    theme: "dark", palette: PALETTES[0].id, font: FONTS[0].id, name: NAMES[0], custom: null,
+    duo: false, secondary: "cyan", customSecondary: null,
+  };
+
+  // ---------- theme ----------
+  const themeBtn = document.getElementById("theme-btn");
+  function setTheme(t) {
+    state.theme = t;
+    root.dataset.theme = t;
+    themeBtn.textContent = t === "dark" ? "switch to light" : "switch to dark";
+    applyPalette();
+  }
+  themeBtn.addEventListener("click", () => setTheme(state.theme === "dark" ? "light" : "dark"));
+
+  // ---------- color swatches ----------
+  const grid = document.getElementById("swatch-grid");
+  function ratioBadge(ratio) {
+    const r = ratio.toFixed(1);
+    const cls = ratio >= 7 ? "pass" : ratio >= 4.5 ? "pass" : "fail";
+    const tag = ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : "fail";
+    return `<span class="${cls}">${r}:1 ${tag}</span>`;
+  }
+  PALETTES.forEach((p) => {
+    const btn = document.createElement("button");
+    btn.className = "swatch";
+    btn.type = "button";
+    btn.dataset.id = p.id;
+    btn.setAttribute("aria-pressed", "false");
+    const darkTheme = deriveTheme(p.dark, "dark");
+    const lightTheme = deriveTheme(p.light, "light");
+    const cDark = contrast(p.dark, darkTheme.bg);
+    const cLight = contrast(p.light, lightTheme.bg);
+    btn.innerHTML = `
+      <div class="chip">
+        <div class="mini" style="background:${darkTheme.bg}; color:${p.dark}"><span class="tag" style="color:${darkTheme.textFaint}">dark</span>Aa</div>
+        <div class="mini" style="background:${lightTheme.bg}; color:${p.light}"><span class="tag" style="color:${lightTheme.textFaint}">light</span>Aa</div>
+      </div>
+      <div class="meta">
+        <div class="name">${p.name}</div>
+        <div class="ratios">
+          dark ${p.dark} on ${darkTheme.bg} &mdash; ${ratioBadge(cDark)}<br>
+          light ${p.light} on ${lightTheme.bg} &mdash; ${ratioBadge(cLight)}
+        </div>
+      </div>`;
+    btn.addEventListener("click", () => { state.custom = null; selectPalette(p.id); });
+    grid.appendChild(btn);
+  });
+
+  function selectPalette(id) {
+    state.palette = id;
+    document.querySelectorAll(".swatch").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.id === id)));
+    applyPalette();
+  }
+
+  function applyPalette() {
+    let base;
+    if (state.custom) {
+      base = state.custom;
+    } else {
+      const p = PALETTES.find((x) => x.id === state.palette);
+      base = state.theme === "dark" ? p.dark : p.light;
+    }
+    const strong = darken(base, 14);
+    const bright = lighten(base, 14);
+    const t = deriveTheme(base, state.theme);
+
+    root.style.setProperty("--shine", base);
+    root.style.setProperty("--shine-strong", strong);
+    root.style.setProperty("--shine-bright", bright);
+    root.style.setProperty("--on-shine", t.bg);
+
+    root.style.setProperty("--bg", t.bg);
+    root.style.setProperty("--surface", t.surface);
+    root.style.setProperty("--surface-strong", t.surfaceStrong);
+    root.style.setProperty("--text", t.text);
+    root.style.setProperty("--text-muted", t.textMuted);
+    root.style.setProperty("--text-faint", t.textFaint);
+    root.style.setProperty("--hairline", `rgba(${hexToRgbStr(t.text)}, 0.12)`);
+    root.style.setProperty("--header-bg", `rgba(${hexToRgbStr(t.bg)}, 0.92)`);
+
+    if (state.duo) {
+      const base2 = secondaryBase();
+      root.style.setProperty("--shine-2", base2);
+      pvStripe.querySelector(".half-1").style.background = base;
+      pvStripe.querySelector(".half-2").style.background = base2;
+      customRatios2.innerHTML = `on shared bg (${t.bg}) &mdash; ${ratioBadge(contrast(base2, t.bg))}`;
+    }
+
+    updateCustomRatios();
+  }
+
+  // custom color picker
+  const customInput = document.getElementById("custom-color");
+  const customRatios = document.getElementById("custom-ratios");
+  function updateCustomRatios() {
+    const hex = customInput.value;
+    const bg = deriveTheme(hex, state.theme).bg;
+    customRatios.innerHTML = `on its derived bg (${bg}) &mdash; ${ratioBadge(contrast(hex, bg))}`;
+  }
+  customInput.addEventListener("input", () => {
+    state.custom = customInput.value;
+    document.querySelectorAll(".swatch").forEach((el) => el.setAttribute("aria-pressed", "false"));
+    applyPalette();
+  });
+
+  // ---------- duo mode: two accents together (e.g. magenta + cyan) ----------
+  const duoToggle = document.getElementById("duo-toggle");
+  const secondaryBlock = document.getElementById("secondary-block");
+  const secondaryRow = document.getElementById("secondary-row");
+  const pvStripe = document.getElementById("pv-stripe");
+  const pvDot2 = document.getElementById("pv-word-dot-2");
+  const customInput2 = document.getElementById("custom-color-2");
+  const customRatios2 = document.getElementById("custom-ratios-2");
+
+  function secondaryBase() {
+    if (state.customSecondary) return state.customSecondary;
+    const p = PALETTES.find((x) => x.id === state.secondary);
+    return state.theme === "dark" ? p.dark : p.light;
+  }
+
+  PALETTES.forEach((p) => {
+    const btn = document.createElement("button");
+    btn.className = "mini-swatch";
+    btn.type = "button";
+    btn.dataset.id = p.id;
+    btn.title = p.name;
+    btn.setAttribute("aria-pressed", String(p.id === state.secondary));
+    btn.innerHTML = `<i style="background:${p.dark}"></i><i style="background:${p.light}"></i>`;
+    btn.addEventListener("click", () => { state.customSecondary = null; selectSecondary(p.id); });
+    secondaryRow.appendChild(btn);
+  });
+
+  function selectSecondary(id) {
+    state.secondary = id;
+    document.querySelectorAll(".mini-swatch").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.id === id)));
+    applyPalette();
+  }
+
+  duoToggle.addEventListener("change", () => {
+    state.duo = duoToggle.checked;
+    secondaryBlock.hidden = !state.duo;
+    pvStripe.hidden = !state.duo;
+    pvDot2.hidden = !state.duo;
+    document.body.classList.toggle("duo", state.duo);
+    applyPalette();
+  });
+
+  customInput2.addEventListener("input", () => {
+    state.customSecondary = customInput2.value;
+    document.querySelectorAll(".mini-swatch").forEach((el) => el.setAttribute("aria-pressed", "false"));
+    applyPalette();
+  });
+
+  // ---------- fonts ----------
+  const fontGrid = document.getElementById("font-grid");
+  FONTS.forEach((f) => {
+    const btn = document.createElement("button");
+    btn.className = "font-opt";
+    btn.type = "button";
+    btn.dataset.id = f.id;
+    btn.setAttribute("aria-pressed", "false");
+    btn.innerHTML = `<span class="sample" style="font-family:${f.stack}; font-weight:${f.weight}">Shiny things, kept in public.</span><span class="label">${f.name}<br><span class="hint">${f.hint}</span></span>`;
+    btn.addEventListener("click", () => selectFont(f.id));
+    fontGrid.appendChild(btn);
+  });
+  function selectFont(id) {
+    state.font = id;
+    document.querySelectorAll(".font-opt").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.id === id)));
+    const f = FONTS.find((x) => x.id === id);
+    root.style.setProperty("--font-display", f.stack);
+    document.getElementById("pv-word").style.fontWeight = f.weight;
+    document.getElementById("pv-h1").style.fontWeight = f.weight;
+    document.getElementById("font-live-name").textContent = `${f.name} — ${f.hint}`;
+    document.getElementById("font-live-sample").style.fontWeight = f.weight;
+  }
+
+  // ---------- name ----------
+  const nameRow = document.getElementById("name-row");
+  NAMES.forEach((n) => {
+    const btn = document.createElement("button");
+    btn.className = "name-opt";
+    btn.type = "button";
+    btn.dataset.name = n;
+    btn.setAttribute("aria-pressed", "false");
+    btn.textContent = n;
+    btn.addEventListener("click", () => selectName(n, true));
+    nameRow.appendChild(btn);
+  });
+  const customName = document.createElement("input");
+  customName.type = "text";
+  customName.placeholder = "type your own";
+  customName.addEventListener("input", () => selectName(customName.value || "OX", false));
+  nameRow.appendChild(customName);
+
+  function selectName(n, fromPreset) {
+    state.name = n;
+    document.querySelectorAll(".name-opt").forEach((el) => el.setAttribute("aria-pressed", String(fromPreset && el.dataset.name === n)));
+    document.getElementById("pv-word-text").textContent = n.toUpperCase();
+    document.title = `${n} — rebrand playground`;
+  }
+
+  // ---------- init ----------
+  selectPalette(PALETTES[0].id);
+  selectFont(FONTS[0].id);
+  selectName(NAMES[0], true);
+  updateCustomRatios();
+})();
+</script>
+
+</body>
+</html>

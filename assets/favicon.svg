@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Hoard favicon — the mark on a dark field, fixed colors. -->
+  <rect width="64" height="64" rx="2" fill="#131010" />
+  <path fill="#D4695E" fill-rule="evenodd"
+        d="M32 10 L54 32 L32 54 L10 32 Z M25.3 20.4 L29.8 24.9 L25.3 29.4 L20.8 24.9 Z" />
+</svg>

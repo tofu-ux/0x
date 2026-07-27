@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Hoard mark">
+  <!-- A shiny thing: a diamond in --shine with a punched-out glint.
+       Uses currentColor so it follows the surrounding text color;
+       set color: var(--shine) where the accent is wanted. -->
+  <path fill="currentColor" fill-rule="evenodd"
+        d="M32 4 L60 32 L32 60 L4 32 Z M22.6 17.2 L28.4 23 L22.6 28.8 L16.8 23 Z" />
+</svg>

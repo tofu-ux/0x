@@ -1,0 +1,28 @@
+{
+  "name": "@tofu-ux/0x",
+  "version": "0.1.0",
+  "description": "0x — an open-source design system. Cyan primary, fuchsia secondary, on a cool near-black, dark by default. 10 alternate themes included.",
+  "type": "module",
+  "exports": {
+    "./tokens.css": "./assets/tokens.css",
+    "./tokens.rgb.css": "./assets/tokens.rgb.css",
+    "./components.css": "./assets/components.css",
+    "./theme.js": "./assets/theme.js",
+    "./tokens.json": "./tokens/tokens.json"
+  },
+  "files": [
+    "assets",
+    "tokens",
+    "swift/Package.swift",
+    "swift/Sources"
+  ],
+  "scripts": {
+    "build": "bun run tools/build.ts"
+  },
+  "license": "MIT",
+  "author": "Tofu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tofu-ux/0x.git"
+  }
+}

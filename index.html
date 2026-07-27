@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- pre-paint: set the theme before first paint so a stored choice never flashes -->
+<script>
+    (() => {
+        try {
+            const q = new URLSearchParams(location.search).get("theme");
+            const t = q || localStorage.getItem("0x-theme");
+            if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+        } catch (_) {}
+    })();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0x — an open-source design system</title>
+<meta name="description" content="0x: tokens, components, and ten alternate themes. Cyan and fuchsia by default, dark is home, no gradients.">
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Righteous&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/tokens.css">
+<link rel="stylesheet" href="./assets/components.css">
+<script defer src="./assets/theme.js"></script>
+<script defer src="./assets/showcase.js"></script>
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible { outline: 2px solid var(--shine); outline-offset: 2px; }
+
+  a { color: var(--shine); text-decoration: none; }
+  a:hover { color: var(--shine-bright); }
+  .prose a, .hero p.sub a, .copy a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 var(--pad);
+    background: var(--header-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .header-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); width: 100%; }
+  .wordmark {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  .wordmark i { width: 9px; height: 9px; background: var(--shine); flex: none; }
+  nav { display: flex; gap: 2px; flex-wrap: wrap; }
+  nav a {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    padding: 4px 10px;
+  }
+  nav a::before { content: "["; color: var(--text-faint); }
+  nav a::after { content: "]"; color: var(--text-faint); }
+  nav a:hover { color: var(--shine); }
+  .header-right { display: flex; align-items: center; gap: var(--space-4); }
+
+  /* theme toggle — the standard sun/moon unit (assets/theme-toggle.html) */
+  .ox-theme-toggle {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0;
+      flex: 0 0 44px;
+      background: none; border: 1px solid var(--hairline); color: var(--text-muted);
+      border-radius: var(--radius);
+      cursor: pointer; transition: border-color 0.2s, color 0.2s;
+  }
+  .ox-theme-toggle:hover { border-color: var(--shine); color: var(--shine); }
+  .ox-theme-toggle:focus-visible { outline: 2px solid var(--shine); outline-offset: 2px; }
+  .ox-theme-toggle svg { width: 17px; height: 17px; }
+  .ox-theme-toggle .sun { display: none; }
+  :root[data-theme="light"] .ox-theme-toggle .sun { display: inline; }
+  :root[data-theme="light"] .ox-theme-toggle .moon { display: none; }
+  @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) .ox-theme-toggle .sun { display: inline; }
+      :root:not([data-theme="dark"]) .ox-theme-toggle .moon { display: none; }
+  }
+  :root[data-theme="dark"] .ox-theme-toggle .sun { display: none; }
+  :root[data-theme="dark"] .ox-theme-toggle .moon { display: inline; }
+  @media (max-width: 720px) {
+    header { height: auto; padding-block: var(--space-1); }
+    .header-in { flex-wrap: wrap; }
+    .wordmark { flex: 1; }
+    .header-right { width: 100%; gap: var(--space-2); }
+    nav {
+      flex: 1;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    nav a { flex: none; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: calc(var(--space-9) + var(--space-5)) var(--pad) var(--space-9);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .prompt { color: var(--text-faint); font-size: var(--text-sm); margin-bottom: var(--space-5); }
+  .prompt b { color: var(--shine); font-weight: 500; }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-3xl);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .cur { color: var(--shine); animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .cur { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+  .hero p.sub {
+    margin-top: var(--space-5);
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+  .btns { display: flex; gap: var(--space-3); margin-top: var(--space-6); flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 11px 18px;
+    border: 1px solid var(--shine);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .btn-solid { background: var(--shine); color: var(--on-shine); }
+  .btn-solid:hover { background: var(--shine-bright); border-color: var(--shine-bright); color: var(--on-shine); }
+  .btn-ghost { color: var(--shine); background: none; }
+  .btn-ghost:hover { color: var(--shine-bright); border-color: var(--shine-bright); }
+
+  /* ---------- sections: full width, hairline-separated ---------- */
+  section {
+    padding: var(--space-7) var(--pad) var(--space-8);
+    border-bottom: 1px solid var(--hairline);
+  }
+  /* chrome (backgrounds, hairlines) stays full-bleed; content in header,
+     hero, sections, and footer shares the same geometry: --pad gutters,
+     centered at --page-max on ultrawide */
+  @media (min-width: 1800px) {
+    .inner { max-width: var(--page-max); margin-inline: auto; }
+  }
+
+  /* man-page section head — numbering is facts, not voice: Plex Mono 500, 14px floor */
+  .sec-head { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6); flex-wrap: wrap; }
+  .sec-head .no { color: var(--shine); font-family: var(--font-mono); font-weight: 500; font-size: var(--text-sm); letter-spacing: 0.04em; }
+  .sec-head h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-xl);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .sec-head .rule-fill { flex: 1; min-width: 60px; border-top: 1px solid var(--hairline); }
+  .sec-head .meta { color: var(--text-faint); font-size: var(--text-sm); }
+
+  /* fluid panel grid — reflows edge to edge */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--hairline);
+    border: 1px solid var(--hairline);
+  }
+  .panel { background: var(--surface); padding: var(--space-5); transition: background-color 0.2s; }
+  .panel:hover { background: var(--surface-strong); }
+  .panel:focus-visible { outline: 2px solid var(--shine); outline-offset: -2px; }
+  .panel h3 { font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.06em; color: var(--text); margin-bottom: var(--space-2); }
+  .panel h3::before { content: "▸ "; color: var(--shine); }
+  .panel p { font-size: var(--text-sm); line-height: 1.65; color: var(--text-muted); }
+  .panel .tag {
+    display: inline-block; margin-top: var(--space-3);
+    font-size: var(--text-sm); color: var(--text-faint);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    padding: 2px 8px;
+  }
+  /* canonical panel anatomy: ▸ title + index on top, hairline, body,
+     meta row (tags left, destination right) — demo in #components */
+  .panel-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+  .panel-top h3 { margin-bottom: 0; }
+  .panel .idx { font-size: var(--text-sm); font-weight: 500; color: var(--text-faint); flex: none; }
+  .panel-rule { border: 0; border-top: 1px solid var(--hairline); margin: var(--space-3) 0; }
+  .panel-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+  .panel-meta .tag { margin-top: 0; }
+  .panel .dest { font-size: var(--text-sm); color: var(--shine); }
+  .panel:hover .dest { color: var(--shine-bright); }
+
+  /* color panels */
+  .chip { height: 44px; border: 1px solid var(--hairline); border-radius: var(--radius); margin-bottom: var(--space-3); }
+  .hexes { font-size: var(--text-sm); color: var(--text-faint); margin-top: var(--space-2); }
+  .hexes b { color: var(--text-muted); font-weight: 500; }
+
+  /* terminal block */
+  .term { border: 1px solid var(--hairline); background: var(--surface); border-radius: var(--radius); }
+  .term-bar {
+    display: flex; gap: var(--space-2); align-items: center;
+    padding: 8px 14px; border-bottom: 1px solid var(--hairline);
+    font-size: var(--text-sm); color: var(--text-faint);
+  }
+  .term-body { padding: var(--space-4) 14px; font-size: var(--text-sm); line-height: 1.8; color: var(--text-muted); overflow-x: auto; white-space: pre; }
+  .term-body .p { color: var(--shine); }
+  .term-body .ok { color: var(--success); }
+  .term-body .cm { color: var(--code-comment); }
+  .term-body .kw { color: var(--code-keyword); }
+  .term-body .st { color: var(--code-string); }
+  .term-body .nu { color: var(--code-number); }
+  .term-body .fn { color: var(--code-function); }
+
+  /* type specimens */
+  .spec { border-top: 1px solid var(--hairline); padding: var(--space-5) 0; }
+  .spec .lbl { font-size: var(--text-sm); color: var(--text-faint); margin-bottom: var(--space-2); }
+  .spec .vt { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.1; color: var(--text); }
+
+  /* layout viz */
+  .viz-band {
+    border: 1px solid var(--hairline); background: var(--surface);
+    padding: var(--space-4); font-size: var(--text-sm); color: var(--text-faint);
+    border-radius: var(--radius);
+  }
+  .viz-measure { max-width: var(--measure); border-left: 2px solid var(--shine); padding-left: var(--space-4); color: var(--text-muted); }
+  .bars { display: grid; gap: 6px; margin-top: var(--space-4); }
+  .bar { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); color: var(--text-faint); }
+  .bar i { display: block; height: 12px; background: var(--surface-strong); border: 1px solid var(--hairline); flex: none; }
+  .bar .n { width: 90px; flex: none; }
+
+  /* components */
+  .input {
+    width: 100%;
+    font-family: var(--font-mono); font-size: var(--text-base);
+    background: var(--surface-strong); color: var(--text);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    padding: 10px 12px;
+  }
+  .input::placeholder { color: var(--text-faint); }
+  .input:focus { outline: 2px solid var(--shine); outline-offset: 0; border-color: var(--shine); }
+  .badges { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: var(--text-muted); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 4px 10px; }
+  .badge i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .rule-demo { display: grid; gap: var(--space-4); }
+  .rule-demo hr { border: 0; border-top: 1px solid var(--hairline); }
+  .workbench { display: grid; gap: var(--space-8); }
+  .component-group { min-width: 0; }
+  .component-head {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3);
+    align-items: baseline; margin-bottom: var(--space-4);
+  }
+  .component-head .index { color: var(--shine); font-size: var(--text-sm); font-weight: 500; }
+  .component-head h3 { color: var(--text); font-size: var(--text-base); letter-spacing: 0.05em; }
+  .component-head p { grid-column: 2; max-width: var(--measure); color: var(--text-muted); font-size: var(--text-sm); }
+  .specimen {
+    padding: var(--space-5); border: 1px solid var(--hairline);
+    background: var(--surface); border-radius: var(--radius);
+  }
+  .specimen + .recipe { margin-top: -1px; }
+  .specimen-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: var(--space-5);
+  }
+  .recipe { border: 1px solid var(--hairline); background: var(--bg); }
+  .recipe summary {
+    display: flex; min-height: 44px; align-items: center; gap: var(--space-2);
+    padding: 0 var(--space-4); color: var(--text-muted); font-size: var(--text-sm);
+    cursor: pointer; list-style: none;
+  }
+  .recipe summary::-webkit-details-marker { display: none; }
+  .recipe summary::before { color: var(--shine); content: "▸"; }
+  .recipe[open] summary::before { content: "▾"; }
+  .recipe-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3); border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline); color: var(--text-faint); font-size: var(--text-sm);
+  }
+  .copy-btn {
+    min-width: 56px; min-height: 44px; padding: 0 var(--space-3);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: transparent; color: var(--text-muted); font: inherit; font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--shine); color: var(--shine); }
+  .recipe pre {
+    max-height: 360px; overflow: auto; padding: var(--space-4);
+    color: var(--text-muted); font: inherit; font-size: var(--text-sm); line-height: 1.7;
+    white-space: pre; tab-size: 4;
+  }
+  .copy-status {
+    position: fixed; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* hard rules */
+  .rules-grid .panel .num { font-family: var(--font-display); font-size: var(--text-xl); color: var(--shine); display: block; margin-bottom: var(--space-2); }
+
+  /* prose within sections keeps its measure */
+  .prose { max-width: var(--measure); color: var(--text-muted); }
+  .prose + .prose { margin-top: var(--space-4); }
+  .note { margin-top: var(--space-5); font-size: var(--text-sm); color: var(--text-faint); max-width: var(--measure); }
+
+  /* footer */
+  footer { padding: var(--space-5) var(--pad) var(--space-8); }
+  .ascii { color: var(--text-faint); font-size: var(--text-sm); white-space: pre; overflow-x: auto; line-height: 1.8; }
+  .copy { margin-top: var(--space-4); font-size: var(--text-sm); color: var(--text-faint); }
+  .copy a { color: var(--text-muted); }
+  .copy a:hover { color: var(--shine); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner header-in">
+  <a class="wordmark" href="#top" aria-label="0x home"><i aria-hidden="true"></i>0x</a>
+  <div class="header-right">
+    <nav aria-label="Sections">
+      <a href="#color">color</a><a href="#type">type</a><a href="#layout">layout</a><a href="#components">components</a><a href="#use">use</a><a href="#rules">rules</a><a href="themes.html">themes</a><a href="playground.html">build</a>
+    </nav>
+    <button type="button" class="ox-theme-toggle"
+            data-ox-theme-toggle aria-pressed="true"
+            aria-label="Switch to light theme" title="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.6v2.4M12 19v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.6 12h2.4M19 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A8.6 8.6 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8z" />
+        </svg>
+    </button>
+  </div>
+  </div>
+</header>
+
+<main>
+<div class="hero" id="top">
+  <div class="inner">
+  <div class="prompt"><b>you@0x</b>:~$ ./0x --show</div>
+  <h1>One system.<br>Ten ways to wear it.<span class="cur">▌</span></h1>
+  <p class="sub">0x is an open-source design system — a default palette plus ten alternate themes, two fonts, no gradients. Take the tokens, the components, or the whole thing. The source is the spec.</p>
+  <div class="btns">
+    <a class="btn btn-solid" href="#use">use the tokens</a>
+    <a class="btn btn-ghost" href="themes.html">browse themes</a>
+    <a class="btn btn-ghost" href="#rules">read the rules</a>
+  </div>
+  </div>
+</div>
+
+<!-- ================= 01 — COLOR ================= -->
+<section id="color">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 01</span><h2>— Color</h2><span class="rule-fill"></span><span class="meta">cyan / fuchsia · 30 tokens · both themes</span></div>
+    <p class="prose">Cyan primary, fuchsia secondary, on a cool near-black. Every token is defined in dark and light; the chip shows the live value, the hexes show both. Contrast notes are computed at codegen time and live inline in <code>assets/tokens.css</code>.</p>
+    <div class="grid" style="margin-top: var(--space-6)">
+      <div class="panel"><div class="chip" style="background: var(--bg)"></div><h3>--bg</h3><p>cool near-black — page ground</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel"><div class="chip" style="background: var(--surface)"></div><h3>--surface</h3><p>cards, raised panels</p><div class="hexes"><b>#141E1F</b> / #FCFDFD</div></div>
+      <div class="panel"><div class="chip" style="background: var(--surface-strong)"></div><h3>--surface-strong</h3><p>inputs, wells, lifted surfaces</p><div class="hexes"><b>#1F2C2D</b> / #E3ECEE</div></div>
+      <div class="panel"><div class="chip" style="background: var(--text)"></div><h3>--text</h3><p>15.9:1 on --bg (AAA)</p><div class="hexes"><b>#EBEFEF</b> / #182425</div></div>
+      <div class="panel"><div class="chip" style="background: var(--text-muted)"></div><h3>--text-muted</h3><p>10.4:1 on --bg (AAA)</p><div class="hexes"><b>#B9C5C6</b> / #3A4E50</div></div>
+      <div class="panel"><div class="chip" style="background: var(--text-faint)"></div><h3>--text-faint</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#91A0A1</b> / #587174</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine)"></div><h3>--shine</h3><p>primary accent · 10.2:1 on --bg (AAA)</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine-strong)"></div><h3>--shine-strong</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#1EADBA</b> / #05383E</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine-bright)"></div><h3>--shine-bright</h3><p>12.1:1 on --bg (AAA)</p><div class="hexes"><b>#7CE1EA</b> / #0FB0C2</div></div>
+      <div class="panel"><div class="chip" style="background: var(--on-shine)"></div><h3>--on-shine</h3><p>10.2:1 on --shine (AAA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine-2)"></div><h3>--shine-2</h3><p>secondary accent · 6.0:1 on --bg (AA)</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine-2-strong)"></div><h3>--shine-2-strong</h3><p>4.3:1 on --bg (AA large text only)</p><div class="hexes"><b>#DD1FB1</b> / #5B1454</div></div>
+      <div class="panel"><div class="chip" style="background: var(--shine-2-bright)"></div><h3>--shine-2-bright</h3><p>9.2:1 on --bg (AAA)</p><div class="hexes"><b>#F19BDC</b> / #D12EC0</div></div>
+      <div class="panel"><div class="chip" style="background: var(--on-shine-2)"></div><h3>--on-shine-2</h3><p>6.0:1 on --shine-2 (AA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel"><div class="chip" style="background: var(--hairline)"></div><h3>--hairline</h3><p>borders, rules — hairline only</p><div class="hexes"><b>rgba(235,239,239,.12)</b> / rgba(24,36,37,.12)</div></div>
+      <div class="panel"><div class="chip" style="background: var(--header-bg)"></div><h3>--header-bg</h3><p>sticky header with backdrop blur</p><div class="hexes"><b>rgba(14,21,22,.92)</b> / rgba(242,247,248,.92)</div></div>
+      <div class="panel"><div class="chip" style="background: var(--danger)"></div><h3>--danger</h3><p>7.1:1 on --bg (AAA)</p><div class="hexes"><b>#E08A7A</b> / #84241E</div></div>
+      <div class="panel"><div class="chip" style="background: var(--warning)"></div><h3>--warning</h3><p>7.2:1 on --bg (AAA)</p><div class="hexes"><b>#C99A3C</b> / #8A5A00</div></div>
+      <div class="panel"><div class="chip" style="background: var(--success)"></div><h3>--success</h3><p>6.7:1 on --bg (AA)</p><div class="hexes"><b>#87A572</b> / #3F6B33</div></div>
+      <div class="panel"><div class="chip" style="background: var(--info)"></div><h3>--info</h3><p>informational — reuses the primary accent by design</p><div class="hexes"><b>→ --shine</b></div></div>
+      <div class="panel"><div class="chip" style="background: var(--code-keyword)"></div><h3>--code-keyword</h3><p>syntax: keywords</p><div class="hexes"><b>→ --shine</b></div></div>
+      <div class="panel"><div class="chip" style="background: var(--code-string)"></div><h3>--code-string</h3><p>syntax: strings — secondary accent</p><div class="hexes"><b>→ --shine-2</b></div></div>
+      <div class="panel"><div class="chip" style="background: var(--code-number)"></div><h3>--code-number</h3><p>8.8:1 on --bg (AAA)</p><div class="hexes"><b>#A2B7B9</b> / #496669</div></div>
+      <div class="panel"><div class="chip" style="background: var(--code-function)"></div><h3>--code-function</h3><p>syntax: functions</p><div class="hexes"><b>→ --text-muted</b></div></div>
+      <div class="panel"><div class="chip" style="background: var(--code-comment)"></div><h3>--code-comment</h3><p>syntax: comments</p><div class="hexes"><b>→ --text-faint</b></div></div>
+      <div class="panel"><div class="chip" style="background: var(--chart-1)"></div><h3>--chart-1</h3><p>categorical charts — cyan (primary)</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
+      <div class="panel"><div class="chip" style="background: var(--chart-2)"></div><h3>--chart-2</h3><p>categorical charts — fuchsia (secondary)</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
+      <div class="panel"><div class="chip" style="background: var(--chart-3)"></div><h3>--chart-3</h3><p>categorical charts — violet</p><div class="hexes"><b>#A769D3</b> / #6C2C96</div></div>
+      <div class="panel"><div class="chip" style="background: var(--chart-4)"></div><h3>--chart-4</h3><p>categorical charts — amber</p><div class="hexes"><b>#D39569</b> / #965A2C</div></div>
+      <div class="panel"><div class="chip" style="background: var(--chart-5)"></div><h3>--chart-5</h3><p>categorical charts — green</p><div class="hexes"><b>#72CA97</b> / #358D5B</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 — TYPE ================= -->
+<section id="type">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 02</span><h2>— Type</h2><span class="rule-fill"></span><span class="meta">Righteous · IBM Plex Mono · SIL OFL-1.1</span></div>
+
+    <div class="spec"><div class="lbl">--text-3xl · Righteous · clamp(2.75rem, 6vw, 4.5rem)</div><div class="vt" style="font-size: var(--text-3xl)">Crows remember</div></div>
+    <div class="spec"><div class="lbl">--text-2xl · Righteous · 2.25rem</div><div class="vt" style="font-size: var(--text-2xl)">Every shiny thing, catalogued</div></div>
+    <div class="spec"><div class="lbl">--text-xl · Righteous · 1.5rem</div><div class="vt" style="font-size: var(--text-xl)">Section heads and man pages</div></div>
+
+    <div class="spec">
+      <div class="lbl">IBM Plex Mono · --text-base · 1rem · capped at --measure (68ch)</div>
+      <p class="prose">Body copy runs in IBM Plex Mono at 400. It sets dense, stays readable at small sizes, and never pretends to be a prose face. Long passages keep a 68ch measure — full-width layout does not mean full-width reading.</p>
+      <p class="prose"><span style="font-weight: 500">Weight 500 carries prompts, labels, and emphasis.</span> <span style="font-weight: 600">Weight 600 is for panel titles and anything that must be found fast.</span> Nothing above 600 ships.</p>
+    </div>
+
+    <div class="spec">
+      <div class="lbl">code · IBM Plex Mono · --code-* tokens</div>
+      <div class="term">
+        <div class="term-bar">OxColors.swift — generated, never hand-edited</div>
+        <div class="term-body" tabindex="0" aria-label="Swift color example"><span class="kw">public extension</span> <span class="fn">Color</span> {
+    <span class="cm">/// `--shine` — primary accent · 10.2:1 on --bg (AAA)</span>
+    <span class="kw">static let</span> oxShine = <span class="fn">Color</span>(red: <span class="nu">63</span>/<span class="nu">255</span>, green: <span class="nu">211</span>/<span class="nu">255</span>, blue: <span class="nu">224</span>/<span class="nu">255</span>)
+}</div>
+      </div>
+    </div>
+
+    <p class="note">Righteous speaks. IBM Plex Mono explains.</p>
+  </div>
+</section>
+
+<!-- ================= 03 — LAYOUT ================= -->
+<section id="layout">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 03</span><h2>— Layout</h2><span class="rule-fill"></span><span class="meta">full width is the default · text keeps its measure</span></div>
+
+    <p class="prose">Full width is the default. Text keeps its measure. Header, footer, rules, and grids run edge to edge; running text stops at 68ch. There is no center column toggle — this is the layout language.</p>
+
+    <div class="viz-band" style="margin-top: var(--space-6)">
+      this band is full-bleed — it ends at the viewport, minus --pad (clamp(24px, 6vw, 96px))
+      <div class="viz-measure" style="margin-top: var(--space-4)">
+        this column is --measure (68ch) — prose stops here no matter how wide the window gets. Resize the window: the band follows, the measure does not.
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: var(--space-6)">
+      <div class="panel">
+        <h3>spacing</h3>
+        <p>--space-1 … --space-9, 4px base. Bars to scale.</p>
+        <div class="bars">
+          <div class="bar"><span class="n">--space-1</span><i style="width: 4px"></i>4px</div>
+          <div class="bar"><span class="n">--space-2</span><i style="width: 8px"></i>8px</div>
+          <div class="bar"><span class="n">--space-3</span><i style="width: 12px"></i>12px</div>
+          <div class="bar"><span class="n">--space-4</span><i style="width: 16px"></i>16px</div>
+          <div class="bar"><span class="n">--space-5</span><i style="width: 24px"></i>24px</div>
+          <div class="bar"><span class="n">--space-6</span><i style="width: 32px"></i>32px</div>
+          <div class="bar"><span class="n">--space-7</span><i style="width: 40px"></i>40px</div>
+          <div class="bar"><span class="n">--space-8</span><i style="width: 48px"></i>48px</div>
+          <div class="bar"><span class="n">--space-9</span><i style="width: 64px"></i>64px</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>page</h3>
+        <p>--pad — fluid page padding, clamp(24px, 6vw, 96px). Every full-width section uses it for side gutters.</p>
+        <p style="margin-top: var(--space-3)">--page-max — 1600px. On viewports ≥ 1800px the content of the header, hero, sections, and footer centers at this ceiling — one shared geometry. The hairlines never do.</p>
+      </div>
+      <div class="panel">
+        <h3>radius</h3>
+        <p>--radius: 2px. One step, applied to panels, inputs, buttons, chips. Nothing rounder ships.</p>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4)">
+          <div style="width: 56px; height: 56px; background: var(--surface-strong); border: 1px solid var(--hairline); border-radius: var(--radius)"></div>
+          <div style="width: 56px; height: 56px; background: var(--surface-strong); border: 1px solid var(--hairline); border-radius: var(--radius)"></div>
+          <div style="width: 56px; height: 56px; background: var(--surface-strong); border: 1px solid var(--hairline); border-radius: var(--radius)"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>grids</h3>
+        <p>repeat(auto-fit, minmax(260px, 1fr)) with 1px gaps painted by --hairline. Panels reflow edge to edge on resize — no breakpoints, no max-width column.</p>
+        <span class="tag">this page is the demo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 — COMPONENTS ================= -->
+<section id="components">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 04</span><h2>— Component workbench</h2><span class="rule-fill"></span><span class="meta">14 primitives · copy the source</span></div>
+    <p class="prose">Import <code>components.css</code> after the tokens, then copy the semantic HTML. The kit is namespaced, framework-free, and uses no values outside the token contract. Native controls keep the behavior where the platform already has it.</p>
+    <div class="h-callout" style="margin: var(--space-5) 0 var(--space-8)">
+      <span class="h-callout-mark" aria-hidden="true">i</span>
+      <div><strong>Start with the markup.</strong> Every specimen below is keyboard-ready. Preserve labels, names, roles, and ARIA when adapting it.</div>
+    </div>
+    <p class="copy-status" data-copy-status aria-live="polite"></p>
+
+    <div class="workbench">
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.01</span><h3>Actions</h3><p>One filled action per decision point. Secondary, quiet, destructive, grouped, and icon-only forms cover the rest.</p></div>
+        <div class="specimen">
+          <div class="h-cluster">
+            <button class="h-btn h-btn-primary" type="button">commit</button>
+            <button class="h-btn" type="button">stash</button>
+            <button class="h-btn h-btn-quiet" type="button">cancel</button>
+            <button class="h-btn h-btn-danger" type="button">delete</button>
+            <button class="h-icon-btn" type="button" aria-label="More actions">•••</button>
+            <div class="h-btn-group" aria-label="View density">
+              <button class="h-btn h-btn-primary" type="button" aria-pressed="true">fit</button>
+              <button class="h-btn" type="button" aria-pressed="false">fill</button>
+            </div>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / buttons</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Buttons">copy</button></div>
+          <pre tabindex="0"><code>&lt;div class="h-cluster"&gt;
+  &lt;button class="h-btn h-btn-primary" type="button"&gt;commit&lt;/button&gt;
+  &lt;button class="h-btn" type="button"&gt;stash&lt;/button&gt;
+  &lt;button class="h-btn h-btn-quiet" type="button"&gt;cancel&lt;/button&gt;
+  &lt;button class="h-btn h-btn-danger" type="button"&gt;delete&lt;/button&gt;
+  &lt;button class="h-icon-btn" type="button" aria-label="More actions"&gt;•••&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.02</span><h3>Fields</h3><p>Labels are visible. Help and error text are linked to the control. Inputs keep a 44px minimum target.</p></div>
+        <div class="specimen specimen-grid">
+          <div class="h-field">
+            <label class="h-label" for="repo-name">Repository <span class="h-required" aria-hidden="true">*</span></label>
+            <input class="h-input" id="repo-name" name="repository" type="text" value="tofu-ux/0x" aria-describedby="repo-help" required>
+            <p class="h-help" id="repo-help">owner/name, without a protocol</p>
+          </div>
+          <div class="h-field">
+            <label class="h-label" for="branch-name">Branch</label>
+            <input class="h-input" id="branch-name" name="branch" type="text" value="main branch" aria-invalid="true" aria-describedby="branch-error">
+            <p class="h-error" id="branch-error">Use letters, numbers, slash, dash, or underscore.</p>
+          </div>
+          <div class="h-field">
+            <label class="h-label" for="target">Target</label>
+            <select class="h-select" id="target" name="target">
+              <option>macOS</option><option>iOS</option><option>Linux</option>
+            </select>
+            <p class="h-help">Select one build destination.</p>
+          </div>
+          <div class="h-field">
+            <label class="h-label" for="notes">Notes</label>
+            <textarea class="h-textarea" id="notes" name="notes" placeholder="What changed?"></textarea>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / field</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Field">copy</button></div>
+          <pre tabindex="0"><code>&lt;div class="h-field"&gt;
+  &lt;label class="h-label" for="repo"&gt;Repository&lt;/label&gt;
+  &lt;input class="h-input" id="repo" name="repository"
+         type="text" aria-describedby="repo-help"&gt;
+  &lt;p class="h-help" id="repo-help"&gt;owner/name, without a protocol&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.03</span><h3>Choice controls</h3><p>Native inputs provide the state and keyboard model. 0x supplies spacing, target size, and accent treatment.</p></div>
+        <div class="specimen specimen-grid">
+          <fieldset class="h-checks">
+            <legend class="h-legend">Checks</legend>
+            <label class="h-check"><input type="checkbox" checked> run tests</label>
+            <label class="h-check"><input type="checkbox"> update snapshots</label>
+          </fieldset>
+          <fieldset class="h-checks">
+            <legend class="h-legend">Release channel</legend>
+            <label class="h-check"><input type="radio" name="channel" checked> stable</label>
+            <label class="h-check"><input type="radio" name="channel"> preview</label>
+          </fieldset>
+          <div class="h-stack">
+            <span class="h-legend">Switch</span>
+            <label class="h-switch">
+              <input type="checkbox" role="switch" checked>
+              <span class="h-switch-track" aria-hidden="true"></span>
+              include prereleases
+            </label>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / switch</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Switch">copy</button></div>
+          <pre tabindex="0"><code>&lt;label class="h-switch"&gt;
+  &lt;input type="checkbox" role="switch"&gt;
+  &lt;span class="h-switch-track" aria-hidden="true"&gt;&lt;/span&gt;
+  include prereleases
+&lt;/label&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.04</span><h3>Status and feedback</h3><p>Badges label state. Callouts explain state. Semantic colors stay reserved for their meaning.</p></div>
+        <div class="specimen h-stack">
+          <div class="h-cluster">
+            <span class="h-badge"><i class="h-status h-status-success" aria-hidden="true"></i>passing</span>
+            <span class="h-badge"><i class="h-status h-status-warning" aria-hidden="true"></i>queued</span>
+            <span class="h-badge"><i class="h-status h-status-danger" aria-hidden="true"></i>failed</span>
+          </div>
+          <div class="h-callout" role="status"><span class="h-callout-mark" aria-hidden="true">i</span><div><strong>Build ready.</strong> Artifacts expire in 14 days.</div></div>
+          <div class="h-callout h-callout-success" role="status"><span class="h-callout-mark" aria-hidden="true">✓</span><div><strong>Published.</strong> Version 0.2.0 is available.</div></div>
+          <div class="h-callout h-callout-warning"><span class="h-callout-mark" aria-hidden="true">■</span><div><strong>Review needed.</strong> Two generated files changed.</div></div>
+          <div class="h-callout h-callout-danger" role="alert"><span class="h-callout-mark" aria-hidden="true">×</span><div><strong>Build failed.</strong> Inspect the first error before retrying.</div></div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / callout</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Callout">copy</button></div>
+          <pre tabindex="0"><code>&lt;div class="h-callout h-callout-success" role="status"&gt;
+  &lt;span class="h-callout-mark" aria-hidden="true"&gt;✓&lt;/span&gt;
+  &lt;div&gt;&lt;strong&gt;Published.&lt;/strong&gt; Version 0.2.0 is available.&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.05</span><h3>Navigation</h3><p>Breadcrumbs state location, tabs switch peer views, and pagination moves through a collection.</p></div>
+        <div class="specimen h-stack">
+          <nav class="h-breadcrumbs" aria-label="Breadcrumb">
+            <ol><li><a href="#components">0x</a></li><li><a href="#components">components</a></li><li aria-current="page">navigation</li></ol>
+          </nav>
+          <nav class="h-tabs" aria-label="Repository views">
+            <a class="h-tab" href="#components" aria-current="page">code</a>
+            <a class="h-tab" href="#components">issues</a>
+            <a class="h-tab" href="#components">releases</a>
+          </nav>
+          <nav class="h-pagination" aria-label="Result pages">
+            <a class="h-page-link" href="#components" aria-label="Previous page">←</a>
+            <a class="h-page-link" href="#components">1</a>
+            <a class="h-page-link" href="#components" aria-current="page">2</a>
+            <a class="h-page-link" href="#components">3</a>
+            <a class="h-page-link" href="#components" aria-label="Next page">→</a>
+          </nav>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / tabs</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Tabs">copy</button></div>
+          <pre tabindex="0"><code>&lt;nav class="h-tabs" aria-label="Repository views"&gt;
+  &lt;a class="h-tab" href="/code/" aria-current="page"&gt;code&lt;/a&gt;
+  &lt;a class="h-tab" href="/issues/"&gt;issues&lt;/a&gt;
+  &lt;a class="h-tab" href="/releases/"&gt;releases&lt;/a&gt;
+&lt;/nav&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.06</span><h3>Cards and metadata</h3><p>The canonical card uses a title, index, rule, body, and footer. Description lists handle key-value facts.</p></div>
+        <div class="specimen specimen-grid">
+          <article class="h-card">
+            <header class="h-card-header"><h4 class="h-card-title">swift-retry</h4><span class="h-card-meta">01/03</span></header>
+            <hr class="h-card-rule">
+            <p class="h-card-body">Policy-driven retry behavior for Swift concurrency. No runtime dependencies.</p>
+            <footer class="h-card-footer"><span class="h-badge">swift</span><a href="#components">source →</a></footer>
+          </article>
+          <dl class="h-data-list">
+            <dt>license</dt><dd>MIT</dd>
+            <dt>swift</dt><dd>5.9+</dd>
+            <dt>platforms</dt><dd>Apple, Linux, Windows</dd>
+            <dt>status</dt><dd><span class="h-badge"><i class="h-status h-status-success" aria-hidden="true"></i>passing</span></dd>
+          </dl>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / card</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Card">copy</button></div>
+          <pre tabindex="0"><code>&lt;article class="h-card"&gt;
+  &lt;header class="h-card-header"&gt;
+    &lt;h3 class="h-card-title"&gt;swift-retry&lt;/h3&gt;
+    &lt;span class="h-card-meta"&gt;01/03&lt;/span&gt;
+  &lt;/header&gt;
+  &lt;hr class="h-card-rule"&gt;
+  &lt;p class="h-card-body"&gt;Policy-driven retry behavior.&lt;/p&gt;
+  &lt;footer class="h-card-footer"&gt;
+    &lt;span class="h-badge"&gt;swift&lt;/span&gt;&lt;a href="/source/"&gt;source →&lt;/a&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.07</span><h3>Data table</h3><p>The wrapper owns horizontal overflow and receives keyboard focus. Headers and captions remain semantic.</p></div>
+        <div class="specimen">
+          <div class="h-table-wrap" tabindex="0" role="region" aria-label="Package compatibility table">
+            <table class="h-table">
+              <thead><tr><th scope="col">package</th><th scope="col">version</th><th scope="col">swift</th><th scope="col">status</th></tr></thead>
+              <tbody>
+                <tr><td>swift-retry</td><td>2.1.0</td><td>5.9+</td><td>passing</td></tr>
+                <tr><td>swift-cache</td><td>1.4.2</td><td>6.0+</td><td>passing</td></tr>
+                <tr><td>swift-parse</td><td>0.8.0</td><td>5.10+</td><td>preview</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / table wrapper</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Table">copy</button></div>
+          <pre tabindex="0"><code>&lt;div class="h-table-wrap" tabindex="0" role="region"
+     aria-label="Package compatibility table"&gt;
+  &lt;table class="h-table"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;package&lt;/th&gt;...&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;&lt;tr&gt;&lt;td&gt;swift-retry&lt;/td&gt;...&lt;/tr&gt;&lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.08</span><h3>Progress and loading</h3><p>Determinate work reports a number. Skeletons reserve layout only; motion stops when the user requests it.</p></div>
+        <div class="specimen specimen-grid">
+          <div class="h-progress" role="progressbar" aria-label="Release upload" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72">
+            <div class="h-progress-meta"><span>uploading release</span><span>72%</span></div>
+            <div class="h-progress-track"><span class="h-progress-value" style="width: 72%"></span></div>
+          </div>
+          <div class="h-stack" aria-label="Loading content" aria-busy="true">
+            <span class="h-skeleton" style="width: 42%"></span>
+            <span class="h-skeleton"></span>
+            <span class="h-skeleton" style="width: 76%"></span>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / progress</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Progress">copy</button></div>
+          <pre tabindex="0"><code>&lt;div class="h-progress" role="progressbar" aria-label="Release upload"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="72"&gt;
+  &lt;div class="h-progress-meta"&gt;&lt;span&gt;uploading release&lt;/span&gt;&lt;span&gt;72%&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="h-progress-track"&gt;
+    &lt;span class="h-progress-value" style="width: 72%"&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.09</span><h3>Disclosure and dialog</h3><p>Use native details for inline disclosure and native dialog for modal decisions. The showcase adds only open and close wiring.</p></div>
+        <div class="specimen specimen-grid">
+          <div>
+            <details class="h-details">
+              <summary class="h-summary">What does dark is home mean?</summary>
+              <div class="h-details-body">Dark is the authored default. Light remains complete and follows the operating system unless explicitly forced.</div>
+            </details>
+            <details class="h-details">
+              <summary class="h-summary">Can components be used without JavaScript?</summary>
+              <div class="h-details-body">Yes. Every component except the dialog opener works without custom JavaScript.</div>
+            </details>
+          </div>
+          <div class="h-empty">
+            <span class="h-empty-mark" aria-hidden="true">[ ]</span>
+            <strong>No release selected.</strong>
+            <span>Choose a release to inspect its artifacts.</span>
+            <button class="h-btn" type="button" data-dialog-open="workbench-dialog">open dialog</button>
+          </div>
+        </div>
+        <details class="recipe" data-recipe>
+          <summary>source / disclosure</summary>
+          <div class="recipe-bar"><span>HTML</span><button class="copy-btn" type="button" data-copy-code="Disclosure">copy</button></div>
+          <pre tabindex="0"><code>&lt;details class="h-details"&gt;
+  &lt;summary class="h-summary"&gt;Can this work without JavaScript?&lt;/summary&gt;
+  &lt;div class="h-details-body"&gt;Yes. Native details owns the behavior.&lt;/div&gt;
+&lt;/details&gt;</code></pre>
+        </details>
+      </article>
+
+      <article class="component-group">
+        <div class="component-head"><span class="index">04.10</span><h3>Terminal</h3><p>Long command output scrolls inside a named, focusable region. Prompts, results, and comments use their assigned tokens.</p></div>
+        <div class="term">
+          <div class="term-bar">sh — 80×24</div>
+          <div class="term-body" tabindex="0" role="region" aria-label="Terminal component example"><span class="cm"># terminal — $ prompts in --shine, ✓ in --success</span>
+<span class="p">$</span> 0x audit ./src
+<span class="ok">✓</span> 0 gradients found <span class="cm">— rule holds</span>
+<span class="ok">✓</span> 30/30 tokens imported, none re-derived
+<span class="p">$</span> 0x theme --check
+<span class="ok">✓</span> dark is home <span class="cm">— light is supported</span></div>
+        </div>
+      </article>
+    </div>
+
+    <dialog class="h-dialog" id="workbench-dialog" aria-labelledby="dialog-title">
+      <header class="h-dialog-header">
+        <h3 class="h-dialog-title" id="dialog-title">Confirm release</h3>
+        <button class="h-icon-btn" type="button" data-dialog-close aria-label="Close dialog">×</button>
+      </header>
+      <div class="h-dialog-body"><p>Publish version 0.2.0 to the public registry?</p></div>
+      <footer class="h-dialog-footer">
+        <button class="h-btn h-btn-quiet" type="button" data-dialog-close>cancel</button>
+        <button class="h-btn h-btn-primary" type="button" data-dialog-close>publish</button>
+      </footer>
+    </dialog>
+  </div>
+</section>
+
+<!-- ================= 05 — USE IT ================= -->
+<section id="use">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 05</span><h2>— Use it</h2><span class="rule-fill"></span><span class="meta">css · npm · swiftpm</span></div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>css</h3>
+        <div class="term" style="margin-top: var(--space-3)">
+          <div class="term-body" tabindex="0" aria-label="CSS installation example"><span class="cm">/* once, globally */</span>
+<span class="kw">@import</span> <span class="st">"@tofu-ux/0x/tokens.css"</span>;
+<span class="kw">@import</span> <span class="st">"@tofu-ux/0x/components.css"</span>; <span class="cm">/* optional */</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>npm</h3>
+        <div class="term" style="margin-top: var(--space-3)">
+          <div class="term-body" tabindex="0" aria-label="npm installation example"><span class="p">$</span> bun add @tofu-ux/0x
+<span class="ok">✓</span> tokens + components + theme controller</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>swiftpm</h3>
+        <div class="term" style="margin-top: var(--space-3)">
+          <div class="term-body" tabindex="0" aria-label="Swift package installation example"><span class="cm"># package url</span>
+https://github.com/tofu-ux/0x
+
+<span class="kw">import</span> <span class="fn">Ox</span>
+<span class="fn">Color</span>.oxShine</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">For the theme toggle, copy the three blocks from <code>assets/theme-toggle.html</code> — pre-paint snippet, button, styles — and load <code>assets/theme.js</code> with defer. One storage key everywhere: 0x-theme. Never ship a "THEME" text button.</p>
+  </div>
+</section>
+
+<!-- ================= 06 — HARD RULES ================= -->
+<section id="rules">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 06</span><h2>— Hard rules</h2><span class="rule-fill"></span><span class="meta">8 rules · 0 exceptions</span></div>
+
+    <div class="grid rules-grid">
+      <div class="panel"><span class="num">01</span><h3>no gradients, ever</h3><p>Not a style choice, a constraint. Flat color carries the palette; if a design needs a gradient, the design is wrong.</p></div>
+      <div class="panel"><span class="num">02</span><h3>shine is the only accent</h3><p>If everything shines, nothing does. One accent, spent carefully — prompts, links, the one primary action.</p></div>
+      <div class="panel"><span class="num">03</span><h3>dark is home, light is a guest</h3><p>Dark is the default theme and the one that gets designed first. Light is fully supported, never the default.</p></div>
+      <div class="panel"><span class="num">04</span><h3>full width; text keeps its measure</h3><p>Chrome and grids run edge to edge. Running text stops at 68ch. Both halves are the rule.</p></div>
+      <div class="panel"><span class="num">05</span><h3>never re-derive tokens</h3><p>Import them. tokens.json is the source of truth; everything else is generated from it. Hand-copied hex is a bug.</p></div>
+      <div class="panel"><span class="num">06</span><h3>Righteous for voice, IBM Plex Mono for facts</h3><p>Headlines and section heads speak in Righteous. Body, UI, and code explain in IBM Plex Mono. No third font.</p></div>
+      <div class="panel"><span class="num">07</span><h3>Righteous never below 20px</h3><p>Small Righteous loses its personality. It sets heroes, section names, and the wordmark only — section numbers, tags, and meta are facts, set in IBM Plex Mono 500.</p></div>
+      <div class="panel"><span class="num">08</span><h3>nothing under 13px</h3><p>--text-sm is 14px and --text-base is 16px. Tags, meta, and captions are not exempt — 13px is the floor, everywhere.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 — COLOPHON ================= -->
+<section id="colophon">
+  <div class="inner">
+    <div class="sec-head"><span class="no">## 07</span><h2>— Colophon</h2><span class="rule-fill"></span><span class="meta">how this gets made</span></div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>stack</h3>
+        <p>tokens/tokens.json, hand-authored. tools/build.ts, run with bun, generates tokens.css, tokens.rgb.css, and the Swift package. Zero runtime dependencies.</p>
+        <span class="tag">bun · css · swift</span>
+      </div>
+      <div class="panel">
+        <h3>themes</h3>
+        <p>Ten alternate palettes beyond the default, each checked against WCAG AA. Browse them at <a href="themes.html">themes.html</a>, or build your own at <a href="playground.html">playground.html</a>.</p>
+        <span class="tag">10 themes</span>
+      </div>
+      <div class="panel">
+        <h3>fonts</h3>
+        <p>Righteous and IBM Plex Mono, both under the SIL Open Font License 1.1, served by Google Fonts. Open source, like everything else here.</p>
+        <span class="tag">SIL OFL-1.1</span>
+      </div>
+      <div class="panel">
+        <h3>license</h3>
+        <p>MIT. Take the tokens, keep the rule about gradients.</p>
+        <span class="tag">LICENSE</span>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+  <div class="ascii" tabindex="0" aria-label="0x design rules">────────────────────────────────────────────────────────────────
+  dark is home · light is a guest · two accents, spent deliberately
+────────────────────────────────────────────────────────────────</div>
+  <p class="copy">© Tofu · <a href="https://github.com/tofu-ux/0x">github.com/tofu-ux/0x</a> · MIT licensed, open source.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+/* ============================================================
+   GENERATED FILE — do not edit by hand.
+   Source of truth: tokens/tokens.json
+   Regenerate with: bun run tools/build.ts
+   ============================================================ */
+
+/* ============================================================
+   0x — RGB channel triplets for alpha-aware utilities.
+   Same colors as tokens.css, exposed as "--h-*: R G B" so
+   Tailwind (and friends) can do: rgb(var(--h-shine) / <alpha-value>).
+
+   Example tailwind.config color:
+     shine: "rgb(var(--h-shine) / <alpha-value>)"
+   ============================================================ */
+
+:root {
+    color-scheme: dark;
+
+    --h-bg:                  14 21 22;
+    --h-surface:             20 30 31;
+    --h-surface-strong:      31 44 45;
+    --h-text:                235 239 239;
+    --h-text-muted:          185 197 198;
+    --h-text-faint:          145 160 161;
+    --h-shine:               63 211 224;
+    --h-shine-strong:        30 173 186;
+    --h-shine-bright:        124 225 234;
+    --h-on-shine:            14 21 22;
+    --h-shine-2:             232 92 199;
+    --h-shine-2-strong:      221 31 177;
+    --h-shine-2-bright:      241 155 220;
+    --h-on-shine-2:          14 21 22;
+    --h-danger:              224 138 122;
+    --h-warning:             201 154 60;
+    --h-success:             135 165 114;
+    --h-info:                63 211 224;
+    --h-code-keyword:        63 211 224;
+    --h-code-string:         232 92 199;
+    --h-code-number:         162 183 185;
+    --h-code-function:       185 197 198;
+    --h-code-comment:        145 160 161;
+    --h-chart-1:             63 211 224;
+    --h-chart-2:             232 92 199;
+    --h-chart-3:             167 105 211;
+    --h-chart-4:             211 149 105;
+    --h-chart-5:             114 202 151;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --h-bg:                  242 247 248;
+    --h-surface:             252 253 253;
+    --h-surface-strong:      227 236 238;
+    --h-text:                24 36 37;
+    --h-text-muted:          58 78 80;
+    --h-text-faint:          88 113 116;
+    --h-shine:               10 116 128;
+    --h-shine-strong:        5 56 62;
+    --h-shine-bright:        15 176 194;
+    --h-on-shine:            242 247 248;
+    --h-shine-2:             150 33 138;
+    --h-shine-2-strong:      91 20 84;
+    --h-shine-2-bright:      209 46 192;
+    --h-on-shine-2:          242 247 248;
+    --h-danger:              132 36 30;
+    --h-warning:             138 90 0;
+    --h-success:             63 107 51;
+    --h-info:                10 116 128;
+    --h-code-keyword:        10 116 128;
+    --h-code-string:         150 33 138;
+    --h-code-number:         73 102 105;
+    --h-code-function:       58 78 80;
+    --h-code-comment:        88 113 116;
+    --h-chart-1:             10 116 128;
+    --h-chart-2:             150 33 138;
+    --h-chart-3:             108 44 150;
+    --h-chart-4:             150 90 44;
+    --h-chart-5:             53 141 91;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+    color-scheme: light;
+
+    --h-bg:                  242 247 248;
+    --h-surface:             252 253 253;
+    --h-surface-strong:      227 236 238;
+    --h-text:                24 36 37;
+    --h-text-muted:          58 78 80;
+    --h-text-faint:          88 113 116;
+    --h-shine:               10 116 128;
+    --h-shine-strong:        5 56 62;
+    --h-shine-bright:        15 176 194;
+    --h-on-shine:            242 247 248;
+    --h-shine-2:             150 33 138;
+    --h-shine-2-strong:      91 20 84;
+    --h-shine-2-bright:      209 46 192;
+    --h-on-shine-2:          242 247 248;
+    --h-danger:              132 36 30;
+    --h-warning:             138 90 0;
+    --h-success:             63 107 51;
+    --h-info:                10 116 128;
+    --h-code-keyword:        10 116 128;
+    --h-code-string:         150 33 138;
+    --h-code-number:         73 102 105;
+    --h-code-function:       58 78 80;
+    --h-code-comment:        88 113 116;
+    --h-chart-1:             10 116 128;
+    --h-chart-2:             150 33 138;
+    --h-chart-3:             108 44 150;
+    --h-chart-4:             150 90 44;
+    --h-chart-5:             53 141 91;
+    }
+}
