@@ -20,7 +20,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Righteous&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Righteous&amp;family=VT323&amp;family=Pacifico&amp;family=Fraunces:wght@600;700&amp;family=Playfair+Display:wght@700;900&amp;family=Archivo+Black&amp;family=Fredoka:wght@600;700&amp;family=Monoton&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/tokens.css">
 <link rel="stylesheet" href="./assets/components.css">
 <script defer src="./assets/theme.js"></script>
@@ -80,6 +80,21 @@
   nav a::after { content: "]"; color: var(--text-faint); }
   nav a:hover { color: var(--shine); }
   .header-right { display: flex; align-items: center; gap: var(--space-4); }
+
+  /* palette picker — previews any of the 10 alternate themes across the whole living spec */
+  .palette-picker-label { font-size: var(--text-sm); color: var(--text-faint); }
+  .palette-picker {
+    min-height: 36px; padding: 0 var(--space-2);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--surface-strong); color: var(--text);
+    font-family: var(--font-mono); font-size: var(--text-sm);
+    cursor: pointer;
+  }
+  .palette-picker:hover { border-color: var(--shine); }
+  .palette-picker:focus-visible { outline: 2px solid var(--shine); outline-offset: 2px; }
+  @media (max-width: 720px) {
+    .palette-picker-label { display: none; }
+  }
 
   /* theme toggle — the standard sun/moon unit (assets/theme-toggle.html) */
   .ox-theme-toggle {
@@ -344,6 +359,20 @@
     <nav aria-label="Sections">
       <a href="#color">color</a><a href="#type">type</a><a href="#layout">layout</a><a href="#components">components</a><a href="#use">use</a><a href="#rules">rules</a><a href="themes.html">themes</a><a href="playground.html">build</a>
     </nav>
+    <label class="palette-picker-label" for="palette-picker">theme</label>
+    <select id="palette-picker" class="palette-picker" aria-label="Preview a different theme's full spec">
+      <option value="default">Default — cyan / fuchsia</option>
+      <option value="miami">Miami</option>
+      <option value="arcade">Neon Arcade</option>
+      <option value="coffee">Coffee Cozy</option>
+      <option value="sunrise">Sunrise</option>
+      <option value="starry">Starry Night</option>
+      <option value="mountain">Mountain</option>
+      <option value="spring">Spring</option>
+      <option value="summer">Summer</option>
+      <option value="autumn">Autumn</option>
+      <option value="winter">Winter</option>
+    </select>
     <button type="button" class="ox-theme-toggle"
             data-ox-theme-toggle aria-pressed="true"
             aria-label="Switch to light theme" title="Switch theme">
@@ -381,36 +410,36 @@
     <div class="sec-head"><span class="no">## 01</span><h2>— Color</h2><span class="rule-fill"></span><span class="meta">cyan / fuchsia · 30 tokens · both themes</span></div>
     <p class="prose">Cyan primary, fuchsia secondary, on a cool near-black. Every token is defined in dark and light; the chip shows the live value, the hexes show both. Contrast notes are computed at codegen time and live inline in <code>assets/tokens.css</code>.</p>
     <div class="grid" style="margin-top: var(--space-6)">
-      <div class="panel"><div class="chip" style="background: var(--bg)"></div><h3>--bg</h3><p>cool near-black — page ground</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
-      <div class="panel"><div class="chip" style="background: var(--surface)"></div><h3>--surface</h3><p>cards, raised panels</p><div class="hexes"><b>#141E1F</b> / #FCFDFD</div></div>
-      <div class="panel"><div class="chip" style="background: var(--surface-strong)"></div><h3>--surface-strong</h3><p>inputs, wells, lifted surfaces</p><div class="hexes"><b>#1F2C2D</b> / #E3ECEE</div></div>
-      <div class="panel"><div class="chip" style="background: var(--text)"></div><h3>--text</h3><p>15.9:1 on --bg (AAA)</p><div class="hexes"><b>#EBEFEF</b> / #182425</div></div>
-      <div class="panel"><div class="chip" style="background: var(--text-muted)"></div><h3>--text-muted</h3><p>10.4:1 on --bg (AAA)</p><div class="hexes"><b>#B9C5C6</b> / #3A4E50</div></div>
-      <div class="panel"><div class="chip" style="background: var(--text-faint)"></div><h3>--text-faint</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#91A0A1</b> / #587174</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine)"></div><h3>--shine</h3><p>primary accent · 10.2:1 on --bg (AAA)</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine-strong)"></div><h3>--shine-strong</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#1EADBA</b> / #05383E</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine-bright)"></div><h3>--shine-bright</h3><p>12.1:1 on --bg (AAA)</p><div class="hexes"><b>#7CE1EA</b> / #0FB0C2</div></div>
-      <div class="panel"><div class="chip" style="background: var(--on-shine)"></div><h3>--on-shine</h3><p>10.2:1 on --shine (AAA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine-2)"></div><h3>--shine-2</h3><p>secondary accent · 6.0:1 on --bg (AA)</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine-2-strong)"></div><h3>--shine-2-strong</h3><p>4.3:1 on --bg (AA large text only)</p><div class="hexes"><b>#DD1FB1</b> / #5B1454</div></div>
-      <div class="panel"><div class="chip" style="background: var(--shine-2-bright)"></div><h3>--shine-2-bright</h3><p>9.2:1 on --bg (AAA)</p><div class="hexes"><b>#F19BDC</b> / #D12EC0</div></div>
-      <div class="panel"><div class="chip" style="background: var(--on-shine-2)"></div><h3>--on-shine-2</h3><p>6.0:1 on --shine-2 (AA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
-      <div class="panel"><div class="chip" style="background: var(--hairline)"></div><h3>--hairline</h3><p>borders, rules — hairline only</p><div class="hexes"><b>rgba(235,239,239,.12)</b> / rgba(24,36,37,.12)</div></div>
-      <div class="panel"><div class="chip" style="background: var(--header-bg)"></div><h3>--header-bg</h3><p>sticky header with backdrop blur</p><div class="hexes"><b>rgba(14,21,22,.92)</b> / rgba(242,247,248,.92)</div></div>
-      <div class="panel"><div class="chip" style="background: var(--danger)"></div><h3>--danger</h3><p>7.1:1 on --bg (AAA)</p><div class="hexes"><b>#E08A7A</b> / #84241E</div></div>
-      <div class="panel"><div class="chip" style="background: var(--warning)"></div><h3>--warning</h3><p>7.2:1 on --bg (AAA)</p><div class="hexes"><b>#C99A3C</b> / #8A5A00</div></div>
-      <div class="panel"><div class="chip" style="background: var(--success)"></div><h3>--success</h3><p>6.7:1 on --bg (AA)</p><div class="hexes"><b>#87A572</b> / #3F6B33</div></div>
-      <div class="panel"><div class="chip" style="background: var(--info)"></div><h3>--info</h3><p>informational — reuses the primary accent by design</p><div class="hexes"><b>→ --shine</b></div></div>
-      <div class="panel"><div class="chip" style="background: var(--code-keyword)"></div><h3>--code-keyword</h3><p>syntax: keywords</p><div class="hexes"><b>→ --shine</b></div></div>
-      <div class="panel"><div class="chip" style="background: var(--code-string)"></div><h3>--code-string</h3><p>syntax: strings — secondary accent</p><div class="hexes"><b>→ --shine-2</b></div></div>
-      <div class="panel"><div class="chip" style="background: var(--code-number)"></div><h3>--code-number</h3><p>8.8:1 on --bg (AAA)</p><div class="hexes"><b>#A2B7B9</b> / #496669</div></div>
-      <div class="panel"><div class="chip" style="background: var(--code-function)"></div><h3>--code-function</h3><p>syntax: functions</p><div class="hexes"><b>→ --text-muted</b></div></div>
-      <div class="panel"><div class="chip" style="background: var(--code-comment)"></div><h3>--code-comment</h3><p>syntax: comments</p><div class="hexes"><b>→ --text-faint</b></div></div>
-      <div class="panel"><div class="chip" style="background: var(--chart-1)"></div><h3>--chart-1</h3><p>categorical charts — cyan (primary)</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
-      <div class="panel"><div class="chip" style="background: var(--chart-2)"></div><h3>--chart-2</h3><p>categorical charts — fuchsia (secondary)</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
-      <div class="panel"><div class="chip" style="background: var(--chart-3)"></div><h3>--chart-3</h3><p>categorical charts — violet</p><div class="hexes"><b>#A769D3</b> / #6C2C96</div></div>
-      <div class="panel"><div class="chip" style="background: var(--chart-4)"></div><h3>--chart-4</h3><p>categorical charts — amber</p><div class="hexes"><b>#D39569</b> / #965A2C</div></div>
-      <div class="panel"><div class="chip" style="background: var(--chart-5)"></div><h3>--chart-5</h3><p>categorical charts — green</p><div class="hexes"><b>#72CA97</b> / #358D5B</div></div>
+      <div class="panel" data-token="bg"><div class="chip" style="background: var(--bg)"></div><h3>--bg</h3><p>page ground</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel" data-token="surface"><div class="chip" style="background: var(--surface)"></div><h3>--surface</h3><p>cards, raised panels</p><div class="hexes"><b>#141E1F</b> / #FCFDFD</div></div>
+      <div class="panel" data-token="surface-strong"><div class="chip" style="background: var(--surface-strong)"></div><h3>--surface-strong</h3><p>inputs, wells, lifted surfaces</p><div class="hexes"><b>#1F2C2D</b> / #E3ECEE</div></div>
+      <div class="panel" data-token="text"><div class="chip" style="background: var(--text)"></div><h3>--text</h3><p>15.9:1 on --bg (AAA)</p><div class="hexes"><b>#EBEFEF</b> / #182425</div></div>
+      <div class="panel" data-token="text-muted"><div class="chip" style="background: var(--text-muted)"></div><h3>--text-muted</h3><p>10.4:1 on --bg (AAA)</p><div class="hexes"><b>#B9C5C6</b> / #3A4E50</div></div>
+      <div class="panel" data-token="text-faint"><div class="chip" style="background: var(--text-faint)"></div><h3>--text-faint</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#91A0A1</b> / #587174</div></div>
+      <div class="panel" data-token="shine"><div class="chip" style="background: var(--shine)"></div><h3>--shine</h3><p>primary accent · 10.2:1 on --bg (AAA)</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
+      <div class="panel" data-token="shine-strong"><div class="chip" style="background: var(--shine-strong)"></div><h3>--shine-strong</h3><p>6.8:1 on --bg (AA)</p><div class="hexes"><b>#1EADBA</b> / #05383E</div></div>
+      <div class="panel" data-token="shine-bright"><div class="chip" style="background: var(--shine-bright)"></div><h3>--shine-bright</h3><p>12.1:1 on --bg (AAA)</p><div class="hexes"><b>#7CE1EA</b> / #0FB0C2</div></div>
+      <div class="panel" data-token="on-shine"><div class="chip" style="background: var(--on-shine)"></div><h3>--on-shine</h3><p>10.2:1 on --shine (AAA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel" data-token="shine-2"><div class="chip" style="background: var(--shine-2)"></div><h3>--shine-2</h3><p>secondary accent · 6.0:1 on --bg (AA)</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
+      <div class="panel" data-token="shine-2-strong"><div class="chip" style="background: var(--shine-2-strong)"></div><h3>--shine-2-strong</h3><p>4.3:1 on --bg (AA large text only)</p><div class="hexes"><b>#DD1FB1</b> / #5B1454</div></div>
+      <div class="panel" data-token="shine-2-bright"><div class="chip" style="background: var(--shine-2-bright)"></div><h3>--shine-2-bright</h3><p>9.2:1 on --bg (AAA)</p><div class="hexes"><b>#F19BDC</b> / #D12EC0</div></div>
+      <div class="panel" data-token="on-shine-2"><div class="chip" style="background: var(--on-shine-2)"></div><h3>--on-shine-2</h3><p>6.0:1 on --shine-2 (AA)</p><div class="hexes"><b>#0E1516</b> / #F2F7F8</div></div>
+      <div class="panel" data-token="hairline"><div class="chip" style="background: var(--hairline)"></div><h3>--hairline</h3><p>borders, rules — hairline only</p><div class="hexes"><b>rgba(235,239,239,.12)</b> / rgba(24,36,37,.12)</div></div>
+      <div class="panel" data-token="header-bg"><div class="chip" style="background: var(--header-bg)"></div><h3>--header-bg</h3><p>sticky header with backdrop blur</p><div class="hexes"><b>rgba(14,21,22,.92)</b> / rgba(242,247,248,.92)</div></div>
+      <div class="panel" data-token="danger"><div class="chip" style="background: var(--danger)"></div><h3>--danger</h3><p>7.1:1 on --bg (AAA)</p><div class="hexes"><b>#E08A7A</b> / #84241E</div></div>
+      <div class="panel" data-token="warning"><div class="chip" style="background: var(--warning)"></div><h3>--warning</h3><p>7.2:1 on --bg (AAA)</p><div class="hexes"><b>#C99A3C</b> / #8A5A00</div></div>
+      <div class="panel" data-token="success"><div class="chip" style="background: var(--success)"></div><h3>--success</h3><p>6.7:1 on --bg (AA)</p><div class="hexes"><b>#87A572</b> / #3F6B33</div></div>
+      <div class="panel" data-token="info"><div class="chip" style="background: var(--info)"></div><h3>--info</h3><p>informational — reuses the primary accent by design</p><div class="hexes"><b>→ --shine</b></div></div>
+      <div class="panel" data-token="code-keyword"><div class="chip" style="background: var(--code-keyword)"></div><h3>--code-keyword</h3><p>syntax: keywords</p><div class="hexes"><b>→ --shine</b></div></div>
+      <div class="panel" data-token="code-string"><div class="chip" style="background: var(--code-string)"></div><h3>--code-string</h3><p>syntax: strings — secondary accent</p><div class="hexes"><b>→ --shine-2</b></div></div>
+      <div class="panel" data-token="code-number"><div class="chip" style="background: var(--code-number)"></div><h3>--code-number</h3><p>8.8:1 on --bg (AAA)</p><div class="hexes"><b>#A2B7B9</b> / #496669</div></div>
+      <div class="panel" data-token="code-function"><div class="chip" style="background: var(--code-function)"></div><h3>--code-function</h3><p>syntax: functions</p><div class="hexes"><b>→ --text-muted</b></div></div>
+      <div class="panel" data-token="code-comment"><div class="chip" style="background: var(--code-comment)"></div><h3>--code-comment</h3><p>syntax: comments</p><div class="hexes"><b>→ --text-faint</b></div></div>
+      <div class="panel" data-token="chart-1"><div class="chip" style="background: var(--chart-1)"></div><h3>--chart-1</h3><p>categorical charts — primary</p><div class="hexes"><b>#3FD3E0</b> / #0A7480</div></div>
+      <div class="panel" data-token="chart-2"><div class="chip" style="background: var(--chart-2)"></div><h3>--chart-2</h3><p>categorical charts — secondary</p><div class="hexes"><b>#E85CC7</b> / #96218A</div></div>
+      <div class="panel" data-token="chart-3"><div class="chip" style="background: var(--chart-3)"></div><h3>--chart-3</h3><p>categorical charts — tertiary 1</p><div class="hexes"><b>#A769D3</b> / #6C2C96</div></div>
+      <div class="panel" data-token="chart-4"><div class="chip" style="background: var(--chart-4)"></div><h3>--chart-4</h3><p>categorical charts — tertiary 2</p><div class="hexes"><b>#D39569</b> / #965A2C</div></div>
+      <div class="panel" data-token="chart-5"><div class="chip" style="background: var(--chart-5)"></div><h3>--chart-5</h3><p>categorical charts — tertiary 3</p><div class="hexes"><b>#72CA97</b> / #358D5B</div></div>
     </div>
   </div>
 </section>
@@ -418,11 +447,11 @@
 <!-- ================= 02 — TYPE ================= -->
 <section id="type">
   <div class="inner">
-    <div class="sec-head"><span class="no">## 02</span><h2>— Type</h2><span class="rule-fill"></span><span class="meta">Righteous · IBM Plex Mono · SIL OFL-1.1</span></div>
+    <div class="sec-head"><span class="no">## 02</span><h2>— Type</h2><span class="rule-fill"></span><span class="meta" id="type-meta">Righteous · IBM Plex Mono · SIL OFL-1.1</span></div>
 
-    <div class="spec"><div class="lbl">--text-3xl · Righteous · clamp(2.75rem, 6vw, 4.5rem)</div><div class="vt" style="font-size: var(--text-3xl)">Crows remember</div></div>
-    <div class="spec"><div class="lbl">--text-2xl · Righteous · 2.25rem</div><div class="vt" style="font-size: var(--text-2xl)">Every shiny thing, catalogued</div></div>
-    <div class="spec"><div class="lbl">--text-xl · Righteous · 1.5rem</div><div class="vt" style="font-size: var(--text-xl)">Section heads and man pages</div></div>
+    <div class="spec"><div class="lbl" id="spec-3xl-lbl">--text-3xl · Righteous · clamp(2.75rem, 6vw, 4.5rem)</div><div class="vt" style="font-size: var(--text-3xl)">Color that scales</div></div>
+    <div class="spec"><div class="lbl" id="spec-2xl-lbl">--text-2xl · Righteous · 2.25rem</div><div class="vt" style="font-size: var(--text-2xl)">Every hex, accounted for</div></div>
+    <div class="spec"><div class="lbl" id="spec-xl-lbl">--text-xl · Righteous · 1.5rem</div><div class="vt" style="font-size: var(--text-xl)">Section heads and man pages</div></div>
 
     <div class="spec">
       <div class="lbl">IBM Plex Mono · --text-base · 1rem · capped at --measure (68ch)</div>
@@ -435,13 +464,13 @@
       <div class="term">
         <div class="term-bar">OxColors.swift — generated, never hand-edited</div>
         <div class="term-body" tabindex="0" aria-label="Swift color example"><span class="kw">public extension</span> <span class="fn">Color</span> {
-    <span class="cm">/// `--shine` — primary accent · 10.2:1 on --bg (AAA)</span>
-    <span class="kw">static let</span> oxShine = <span class="fn">Color</span>(red: <span class="nu">63</span>/<span class="nu">255</span>, green: <span class="nu">211</span>/<span class="nu">255</span>, blue: <span class="nu">224</span>/<span class="nu">255</span>)
+    <span class="cm">/// `--shine` — <span id="swift-cm-note">primary accent · 10.2:1 on --bg (AAA)</span></span>
+    <span class="kw">static let</span> oxShine = <span class="fn">Color</span>(red: <span class="nu" id="swift-r">63</span>/<span class="nu">255</span>, green: <span class="nu" id="swift-g">211</span>/<span class="nu">255</span>, blue: <span class="nu" id="swift-b">224</span>/<span class="nu">255</span>)
 }</div>
       </div>
     </div>
 
-    <p class="note">Righteous speaks. IBM Plex Mono explains.</p>
+    <p class="note" id="type-note">Righteous speaks. IBM Plex Mono explains.</p>
   </div>
 </section>
 
@@ -853,8 +882,8 @@ https://github.com/tofu-ux/0x
       <div class="panel"><span class="num">03</span><h3>dark is home, light is a guest</h3><p>Dark is the default theme and the one that gets designed first. Light is fully supported, never the default.</p></div>
       <div class="panel"><span class="num">04</span><h3>full width; text keeps its measure</h3><p>Chrome and grids run edge to edge. Running text stops at 68ch. Both halves are the rule.</p></div>
       <div class="panel"><span class="num">05</span><h3>never re-derive tokens</h3><p>Import them. tokens.json is the source of truth; everything else is generated from it. Hand-copied hex is a bug.</p></div>
-      <div class="panel"><span class="num">06</span><h3>Righteous for voice, IBM Plex Mono for facts</h3><p>Headlines and section heads speak in Righteous. Body, UI, and code explain in IBM Plex Mono. No third font.</p></div>
-      <div class="panel"><span class="num">07</span><h3>Righteous never below 20px</h3><p>Small Righteous loses its personality. It sets heroes, section names, and the wordmark only — section numbers, tags, and meta are facts, set in IBM Plex Mono 500.</p></div>
+      <div class="panel"><span class="num">06</span><h3 id="rule-06-h">Righteous for voice, IBM Plex Mono for facts</h3><p id="rule-06-p">Headlines and section heads speak in Righteous. Body, UI, and code explain in IBM Plex Mono. No third font.</p></div>
+      <div class="panel"><span class="num">07</span><h3 id="rule-07-h">Righteous never below 20px</h3><p id="rule-07-p">Small Righteous loses its personality. It sets heroes, section names, and the wordmark only — section numbers, tags, and meta are facts, set in IBM Plex Mono 500.</p></div>
       <div class="panel"><span class="num">08</span><h3>nothing under 13px</h3><p>--text-sm is 14px and --text-base is 16px. Tags, meta, and captions are not exempt — 13px is the floor, everywhere.</p></div>
     </div>
   </div>
@@ -878,7 +907,7 @@ https://github.com/tofu-ux/0x
       </div>
       <div class="panel">
         <h3>fonts</h3>
-        <p>Righteous and IBM Plex Mono, both under the SIL Open Font License 1.1, served by Google Fonts. Open source, like everything else here.</p>
+        <p id="colophon-fonts-p">Righteous and IBM Plex Mono, both under the SIL Open Font License 1.1, served by Google Fonts. Open source, like everything else here.</p>
         <span class="tag">SIL OFL-1.1</span>
       </div>
       <div class="panel">
@@ -899,6 +928,232 @@ https://github.com/tofu-ux/0x
   <p class="copy">© Tofu · <a href="https://github.com/tofu-ux/0x">github.com/tofu-ux/0x</a> · MIT licensed, open source.</p>
   </div>
 </footer>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.documentElement;
+
+  // ---------- color math (matches tools/build.ts) ----------
+  function hexToRgb(hex) { const m = hex.replace("#", "").match(/.{2}/g); return m.map((h) => parseInt(h, 16)); }
+  function hexToRgbStr(hex) { return hexToRgb(hex).join(", "); }
+  function relLuminance([r, g, b]) {
+    const c = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    const [rl, gl, bl] = [r, g, b].map(c);
+    return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+  }
+  function contrast(a, b) {
+    const lA = relLuminance(hexToRgb(a)), lB = relLuminance(hexToRgb(b));
+    const [hi, lo] = lA > lB ? [lA, lB] : [lB, lA];
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  function hexToHsl(hex) {
+    let [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        default: h = (r - g) / d + 4;
+      }
+      h /= 6;
+    }
+    return [h * 360, s * 100, l * 100];
+  }
+  function hslToHex(h, s, l) {
+    h = ((h % 360) + 360) % 360; h /= 360; s /= 100; l /= 100;
+    let r, g, b;
+    if (s === 0) { r = g = b = l; }
+    else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1; if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1 / 3);
+    }
+    const toHex = (c) => Math.round(c * 255).toString(16).padStart(2, "0").toUpperCase();
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+  function aaLabel(r) {
+    if (r >= 7) return "AAA";
+    if (r >= 4.5) return "AA";
+    if (r >= 3) return "AA large text only";
+    return "below AA — decorative use only";
+  }
+
+  // ---------- palette data: the default plus the 10 shipped themes ----------
+  const PALETTES = {
+    default: { name: "Default", font: `"Righteous", "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#0E1516", surface:"#141E1F", surfaceStrong:"#1F2C2D", text:"#EBEFEF", textMuted:"#B9C5C6", textFaint:"#91A0A1", accent:"#3FD3E0", accentStrong:"#1EADBA", accentBright:"#7CE1EA", secondary:"#E85CC7", secondaryStrong:"#DD1FB1", secondaryBright:"#F19BDC" },
+      light: { bg:"#F2F7F8", surface:"#FCFDFD", surfaceStrong:"#E3ECEE", text:"#182425", textMuted:"#3A4E50", textFaint:"#587174", accent:"#0A7480", accentStrong:"#05383E", accentBright:"#0FB0C2", secondary:"#96218A", secondaryStrong:"#5B1454", secondaryBright:"#D12EC0" } },
+    miami: { name: "Miami", font: `"Righteous", "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#0E1516", surface:"#141E1F", surfaceStrong:"#1F2C2D", text:"#EBEFEF", textMuted:"#B9C5C6", textFaint:"#91A0A1", accent:"#3FD3E0", accentStrong:"#1EADBA", accentBright:"#7CE1EA", secondary:"#E0559A", secondaryStrong:"#C92576", secondaryBright:"#EB91BE" },
+      light: { bg:"#CDEEF4", surface:"#FFFFFF", surfaceStrong:"#DBF1F5", text:"#0E2A2F", textMuted:"#235C67", textFaint:"#2D6F7C", accent:"#03727C", accentStrong:"#013B40", accentBright:"#04929F", secondary:"#A6075C", secondaryStrong:"#610436", secondaryBright:"#D20974" } },
+    arcade: { name: "Neon Arcade", font: `VT323, "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#101311", surface:"#181B19", surfaceStrong:"#252826", text:"#EDEDED", textMuted:"#BFBFBF", textFaint:"#999999", accent:"#3DFF7A", accentStrong:"#00F54D", accentBright:"#84FFAB", secondary:"#FF3DBE", secondaryStrong:"#F500A3", secondaryBright:"#FF84D6" },
+      light: { bg:"#D6F5E0", surface:"#FBFEFC", surfaceStrong:"#DCF4E4", text:"#0F2E19", textMuted:"#27633A", textFaint:"#317848", accent:"#037C2C", accentStrong:"#013613", accentBright:"#049535", secondary:"#9B086A", secondaryStrong:"#57043C", secondaryBright:"#C70A88" } },
+    coffee: { name: "Coffee Cozy", font: `"Pacifico", "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#16120E", surface:"#1F1A14", surfaceStrong:"#2D271F", text:"#EFEDEB", textMuted:"#C6C0B9", textFaint:"#A19A91", accent:"#E0A458", accentStrong:"#CB8226", accentBright:"#EBC594", secondary:"#D98B6B", secondaryStrong:"#C95F34", secondaryBright:"#E8B8A4" },
+      light: { bg:"#F8F5F2", surface:"#FDFDFC", surfaceStrong:"#EEE9E3", text:"#251F18", textMuted:"#50463A", textFaint:"#746858", accent:"#8A5A1E", accentStrong:"#4F3411", accentBright:"#C17D2A", secondary:"#9C4E32", secondaryStrong:"#663321", secondaryBright:"#C76E4F" } },
+    sunrise: { name: "Sunrise", font: `"Fraunces", "IBM Plex Mono", monospace`, weight: 600,
+      dark:  { bg:"#F7F3E3", surface:"#FEFDFB", surfaceStrong:"#F3EFDD", text:"#2C2711", textMuted:"#60552A", textFaint:"#7A6D38", accent:"#1A6D9E", accentStrong:"#104361", accentBright:"#1E7FB8", secondary:"#7E6007", secondaryStrong:"#3A2C03", secondaryBright:"#9B7609" },
+      light: { bg:"#F7F3E3", surface:"#FEFDFB", surfaceStrong:"#F3EFDD", text:"#2C2711", textMuted:"#60552A", textFaint:"#7A6D38", accent:"#1A6D9E", accentStrong:"#104361", accentBright:"#1E7FB8", secondary:"#7E6007", secondaryStrong:"#3A2C03", secondaryBright:"#9B7609" } },
+    starry: { name: "Starry Night", font: `"Playfair Display", "IBM Plex Mono", monospace`, weight: 900,
+      dark:  { bg:"#0A0C15", surface:"#111522", surfaceStrong:"#1A1F32", text:"#E9EBF2", textMuted:"#B1B7CE", textFaint:"#848DAE", accent:"#F7D564", accentStrong:"#F3C320", accentBright:"#FBE7A8", secondary:"#B190DF", secondaryStrong:"#8A59CF", secondaryBright:"#D8C7EF" },
+      light: { bg:"#0A0C15", surface:"#111522", surfaceStrong:"#1A1F32", text:"#E9EBF2", textMuted:"#B1B7CE", textFaint:"#848DAE", accent:"#F7D564", accentStrong:"#F3C320", accentBright:"#FBE7A8", secondary:"#B190DF", secondaryStrong:"#8A59CF", secondaryBright:"#D8C7EF" } },
+    mountain: { name: "Mountain", font: `"Archivo Black", "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#0E1316", surface:"#141B1F", surfaceStrong:"#1F292D", text:"#EBEEEF", textMuted:"#B9C1C6", textFaint:"#919CA1", accent:"#4E8C6B", accentStrong:"#3B6B52", accentBright:"#71B08F", secondary:"#6FA8C9", secondaryStrong:"#4287AF", secondaryBright:"#A3C7DC" },
+      light: { bg:"#F2F6F8", surface:"#FCFDFD", surfaceStrong:"#E3EBEE", text:"#182225", textMuted:"#3A4A50", textFaint:"#586C74", accent:"#2E6B4A", accentStrong:"#193927", accentBright:"#439D6D", secondary:"#397798", secondaryStrong:"#275168", secondaryBright:"#4C95BC" } },
+    spring: { name: "Spring", font: `"Fredoka", "IBM Plex Mono", monospace`, weight: 600,
+      dark:  { bg:"#1C1217", surface:"#1F141A", surfaceStrong:"#2D1F26", text:"#EFEBED", textMuted:"#C6B9BF", textFaint:"#A19199", accent:"#FC7EBD", accentStrong:"#FA3899", accentBright:"#FEC4E1", secondary:"#5CF42A", secondaryStrong:"#3ACC0B", secondaryBright:"#90F86E" },
+      light: { bg:"#F8F2F5", surface:"#FDFCFC", surfaceStrong:"#EEE3E8", text:"#25181F", textMuted:"#503A45", textFaint:"#745866", accent:"#AE095C", accentStrong:"#6A0538", accentBright:"#F20D80", secondary:"#227406", secondaryStrong:"#0E3002", secondaryBright:"#2B9108" } },
+    summer: { name: "Summer", font: `"Monoton", "IBM Plex Mono", monospace`, weight: 400,
+      dark:  { bg:"#16140E", surface:"#1F1C14", surfaceStrong:"#2D291F", text:"#EFEEEB", textMuted:"#C6C2B9", textFaint:"#A19D91", accent:"#FFC629", accentStrong:"#E1A500", accentBright:"#FFD970", secondary:"#FA42BD", secondaryStrong:"#EE06A1", secondaryBright:"#FC88D5" },
+      light: { bg:"#F5DBEC", surface:"#FEFBFD", surfaceStrong:"#F3DDEC", text:"#2C1123", textMuted:"#602A4E", textFaint:"#8C4073", accent:"#865B04", accentStrong:"#462F02", accentBright:"#9A6804", secondary:"#A50971", secondaryStrong:"#610543", secondaryBright:"#D10B8F" } },
+    autumn: { name: "Autumn", font: `"Fraunces", "IBM Plex Mono", monospace`, weight: 700,
+      dark:  { bg:"#16110E", surface:"#1F1814", surfaceStrong:"#2D241F", text:"#EFEDEB", textMuted:"#C6BEB9", textFaint:"#A19791", accent:"#C2642E", accentStrong:"#994F24", accentBright:"#D8885A", secondary:"#F1C822", secondaryStrong:"#BF9C0C", secondaryBright:"#F5D965" },
+      light: { bg:"#F6EADF", surface:"#FEFCFB", surfaceStrong:"#F3E8DD", text:"#2C1E11", textMuted:"#60442A", textFaint:"#89623E", accent:"#7E4325", accentStrong:"#472615", accentBright:"#A1562F", secondary:"#80640A", secondaryStrong:"#4C3B06", secondaryBright:"#9C7A0C" } },
+    winter: { name: "Winter", font: `"Space Grotesk", "IBM Plex Mono", monospace`, weight: 500,
+      dark:  { bg:"#0E1416", surface:"#141C1F", surfaceStrong:"#1F2A2D", text:"#EBEEEF", textMuted:"#B9C2C6", textFaint:"#919DA1", accent:"#8FD9F2", accentStrong:"#4FC3EB", accentBright:"#CFEFF9", secondary:"#D9DEE3", secondaryStrong:"#B0BAC5", secondaryBright:"#FFFFFF" },
+      light: { bg:"#F2F6F8", surface:"#FCFDFD", surfaceStrong:"#E3EAEE", text:"#182125", textMuted:"#3A4950", textFaint:"#586C74", accent:"#1E6A8A", accentStrong:"#113D4F", accentBright:"#2687B0", secondary:"#5A6A72", secondaryStrong:"#3B454A", secondaryBright:"#6E828C" } },
+  };
+
+  const SEMANTIC = {
+    dark: { danger: "#E08A7A", warning: "#C99A3C", success: "#87A572" },
+    light: { danger: "#84241E", warning: "#8A5A00", success: "#3F6B33" },
+  };
+
+  // derives the remaining 18 tokens (semantic/code/chart) from the 12 core values,
+  // using the same formulas tools/build.ts used to derive the default theme's own.
+  function deriveFull(core, mode) {
+    const [hue] = hexToHsl(core.accent);
+    const rot = (deg, s, l) => hslToHex(hue + deg, s, l);
+    const codeNumber = mode === "dark" ? hslToHex(hue, 14, 68) : hslToHex(hue, 18, 35);
+    const chart3 = mode === "dark" ? rot(90, 55, 62) : rot(90, 55, 38);
+    const chart4 = mode === "dark" ? rot(200, 55, 62) : rot(200, 55, 38);
+    const chart5 = mode === "dark" ? rot(320, 45, 62) : rot(320, 45, 38);
+    const sem = SEMANTIC[mode];
+    return {
+      "bg": core.bg, "surface": core.surface, "surface-strong": core.surfaceStrong,
+      "text": core.text, "text-muted": core.textMuted, "text-faint": core.textFaint,
+      "shine": core.accent, "shine-strong": core.accentStrong, "shine-bright": core.accentBright, "on-shine": core.bg,
+      "shine-2": core.secondary, "shine-2-strong": core.secondaryStrong, "shine-2-bright": core.secondaryBright, "on-shine-2": core.bg,
+      "hairline": `rgba(${hexToRgbStr(core.text)}, 0.12)`,
+      "header-bg": `rgba(${hexToRgbStr(core.bg)}, 0.92)`,
+      "danger": sem.danger, "warning": sem.warning, "success": sem.success,
+      "info": core.accent, "code-keyword": core.accent, "code-string": core.secondary,
+      "code-number": codeNumber, "code-function": core.textMuted, "code-comment": core.textFaint,
+      "chart-1": core.accent, "chart-2": core.secondary, "chart-3": chart3, "chart-4": chart4, "chart-5": chart5,
+    };
+  }
+
+  const REF_TOKENS = { info: "shine", "code-keyword": "shine", "code-string": "shine-2", "code-function": "text-muted", "code-comment": "text-faint" };
+  const CONTRAST_PAIRS = {
+    text: "bg", "text-muted": "bg", "text-faint": "bg",
+    shine: "bg", "shine-strong": "bg", "shine-bright": "bg", "on-shine": "shine",
+    "shine-2": "bg", "shine-2-strong": "bg", "shine-2-bright": "bg", "on-shine-2": "shine-2",
+    danger: "bg", warning: "bg", success: "bg",
+    "code-string": "bg", "code-number": "bg", "code-function": "bg",
+  };
+  const SPECIAL_PREFIX = { shine: "primary accent · ", "shine-2": "secondary accent · " };
+
+  function fmtValue(v) {
+    if (v.startsWith("rgba")) return v.replace(/\s+/g, "").replace(",0.", ",.");
+    return v;
+  }
+
+  function currentMode() {
+    return root.dataset.theme === "light" ? "light" : "dark";
+  }
+
+  function applyPalette(id) {
+    const p = PALETTES[id];
+    if (!p) return;
+    const dark = deriveFull(p.dark, "dark");
+    const light = deriveFull(p.light, "light");
+    const mode = currentMode();
+    const active = mode === "dark" ? dark : light;
+
+    Object.entries(active).forEach(([token, value]) => root.style.setProperty(`--${token}`, value));
+    root.style.setProperty("--font-display", p.font);
+
+    // color-section panels: hex values + live contrast notes
+    document.querySelectorAll(".panel[data-token]").forEach((panel) => {
+      const token = panel.dataset.token;
+      const hexesEl = panel.querySelector(".hexes");
+      const pEl = panel.querySelector("p");
+      if (REF_TOKENS[token]) {
+        hexesEl.innerHTML = `<b>→ --${REF_TOKENS[token]}</b>`;
+      } else {
+        const dv = fmtValue(dark[token]), lv = fmtValue(light[token]);
+        hexesEl.innerHTML = dv === lv ? `<b>${dv}</b>` : `<b>${dv}</b> / ${lv}`;
+      }
+      const pairTo = CONTRAST_PAIRS[token];
+      if (pairTo && pEl) {
+        const fg = active[token];
+        const bg = active[pairTo];
+        const r = contrast(fg, bg);
+        pEl.textContent = `${SPECIAL_PREFIX[token] || ""}${r.toFixed(1)}:1 on --${pairTo} (${aaLabel(r)})`;
+      }
+    });
+
+    // section heading / hero / wordmark weight, so each font renders as intended
+    document.querySelectorAll(".sec-head h2, h1, .wordmark").forEach((el) => { el.style.fontWeight = p.weight; });
+
+    // font-name prose scattered through the type + rules + colophon sections
+    const fontName = p.font.split(",")[0].replace(/"/g, "");
+    const meta = document.getElementById("type-meta"); if (meta) meta.textContent = `${fontName} · IBM Plex Mono · SIL OFL-1.1`;
+    const l3 = document.getElementById("spec-3xl-lbl"); if (l3) l3.textContent = `--text-3xl · ${fontName} · clamp(2.75rem, 6vw, 4.5rem)`;
+    const l2 = document.getElementById("spec-2xl-lbl"); if (l2) l2.textContent = `--text-2xl · ${fontName} · 2.25rem`;
+    const l1 = document.getElementById("spec-xl-lbl"); if (l1) l1.textContent = `--text-xl · ${fontName} · 1.5rem`;
+    const note = document.getElementById("type-note"); if (note) note.textContent = `${fontName} speaks. IBM Plex Mono explains.`;
+    const r6h = document.getElementById("rule-06-h"); if (r6h) r6h.textContent = `${fontName} for voice, IBM Plex Mono for facts`;
+    const r6p = document.getElementById("rule-06-p"); if (r6p) r6p.textContent = `Headlines and section heads speak in ${fontName}. Body, UI, and code explain in IBM Plex Mono. No third font.`;
+    const r7h = document.getElementById("rule-07-h"); if (r7h) r7h.textContent = `${fontName} never below 20px`;
+    const r7p = document.getElementById("rule-07-p"); if (r7p) r7p.textContent = `Small ${fontName} loses its personality. It sets heroes, section names, and the wordmark only — section numbers, tags, and meta are facts, set in IBM Plex Mono 500.`;
+    const cf = document.getElementById("colophon-fonts-p"); if (cf) cf.textContent = `${fontName} and IBM Plex Mono, both under the SIL Open Font License 1.1, served by Google Fonts. Open source, like everything else here.`;
+
+    // swift code sample — keep the RGB triplet honest
+    const shineRgb = hexToRgb(active.shine);
+    const swR = document.getElementById("swift-r"); if (swR) swR.textContent = shineRgb[0];
+    const swG = document.getElementById("swift-g"); if (swG) swG.textContent = shineRgb[1];
+    const swB = document.getElementById("swift-b"); if (swB) swB.textContent = shineRgb[2];
+    const swNote = document.getElementById("swift-cm-note");
+    if (swNote) {
+      const r = contrast(active.shine, active.bg);
+      swNote.textContent = `primary accent · ${r.toFixed(1)}:1 on --bg (${aaLabel(r)})`;
+    }
+
+    try { localStorage.setItem("0x-palette", id); } catch (_) { /* storage may be unavailable */ }
+  }
+
+  const picker = document.getElementById("palette-picker");
+  if (picker) {
+    picker.addEventListener("change", () => applyPalette(picker.value));
+
+    // re-render the active palette if dark/light is toggled
+    document.querySelectorAll("[data-ox-theme-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => window.setTimeout(() => applyPalette(picker.value), 0));
+    });
+
+    let saved = "default";
+    try { saved = localStorage.getItem("0x-palette") || "default"; } catch (_) { /* no stored preference */ }
+    if (PALETTES[saved]) {
+      picker.value = saved;
+      applyPalette(saved);
+    }
+  }
+})();
+</script>
 
 </body>
 </html>
